@@ -42,7 +42,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('posts/{id}/force-delete', [PostController::class, 'forceDelete'])->name('cms.posts.force-delete');
 
         // Page Routes
-        // Pages
         Route::get('pages', [PageController::class, 'index'])->name('cms.pages.index');
         Route::get('pages/create', [PageController::class, 'create'])->name('cms.pages.create');
         Route::post('pages', [PageController::class, 'store'])->name('cms.pages.store');
