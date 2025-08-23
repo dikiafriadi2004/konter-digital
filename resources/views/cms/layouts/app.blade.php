@@ -10,6 +10,7 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ asset('back/assets/css/app.css') }}">
+    @stack('css')
 
 </head>
 

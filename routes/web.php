@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Cms\MenuController;
 use App\Http\Controllers\Cms\PageController;
 use App\Http\Controllers\Cms\PostController;
 use App\Http\Controllers\Cms\CategoryController;
@@ -49,6 +50,15 @@ Route::middleware('auth')->group(function () {
         Route::get('pages/trash', [PageController::class, 'trash'])->name('cms.pages.trash');
         Route::post('pages/{id}/restore', [PageController::class, 'restore'])->name('cms.pages.restore');
         Route::delete('pages/{id}/force-delete', [PageController::class, 'forceDelete'])->name('cms.pages.force-delete');
+
+        // Menu
+        Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
+        Route::post('menus', [MenuController::class, 'store'])->name('menus.store');
+        Route::put('menus/{menu}', [MenuController::class, 'update'])->name('menus.update');
+        Route::delete('menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
+
+        // update order
+        Route::post('menus/update-order', [MenuController::class, 'updateOrder'])->name('menus.updateOrder');
     });
 });
 
