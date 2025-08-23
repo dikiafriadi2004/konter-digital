@@ -1,7 +1,9 @@
 /* Gaya dasar untuk transisi mode gelap dan background */
 body {
     transition: background-color 0.3s ease, color 0.3s ease;
-    background-image: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    background-image: linear-gradient(135deg,
+            var(--bg-gradient-start),
+            var(--bg-gradient-end));
 }
 
 /* Gaya untuk elemen input, textarea, dan select */
@@ -87,7 +89,9 @@ html.dark {
 
 /* Style for buttons for smoother transitions and enhanced hover */
 button {
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out,
+        transform 0.2s ease-in-out;
 }
 
 button:hover {
@@ -97,19 +101,21 @@ button:hover {
 
 /* Enhanced box-shadow for the card for depth */
 .shadow-lg-custom {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .dark .shadow-lg-custom {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+        0 4px 6px -2px rgba(0, 0, 0, 0.2);
 }
 
 /* Menambahkan transisi pada link navigasi untuk efek yang lebih halus */
 #sidebar nav a,
 #sidebar nav button {
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
 }
-
 
 /* Gaya untuk tautan navigasi aktif */
 .nav-link.active {
@@ -147,16 +153,149 @@ button:hover {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
+
 @keyframes fadeOut {
-    from { opacity: 1; transform: scale(1); }
-    to { opacity: 0; transform: scale(0.9); }
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
 }
+
 .animate-fade-in {
     animation: fadeIn 0.3s ease-out;
 }
+
 .animate-fade-out {
     animation: fadeOut 0.3s ease-in forwards;
+}
+
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#sidebar nav a,
+#sidebar nav button,
+button,
+a {
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="file"],
+textarea,
+select {
+    background-color: var(--slate-50);
+    color: var(--slate-800);
+    border-color: var(--slate-300);
+
+    .dark & {
+        background-color: var(--slate-700);
+        color: var(--slate-200);
+        border-color: var(--slate-600);
+    }
+
+    &:hover {
+        border-color: var(--slate-400);
+
+        .dark & {
+            border-color: var(--slate-500);
+        }
+    }
+
+    &:focus {
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 2px rgba(var(--primary-500-rgb), 0.5);
+
+        .dark & {
+            box-shadow: 0 0 0 2px rgba(var(--primary-400-rgb), 0.5);
+        }
+    }
+}
+
+
+.modal-notification-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-notification-backdrop.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-notification {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-out;
+}
+
+.modal-notification-backdrop.show .modal-notification {
+    transform: translateY(0);
+}
+
+.dark .modal-notification {
+    background-color: var(--slate-800);
+}
+
+.modal-notification.success {
+    background-color: var(--success-500);
+    color: white;
+}
+
+.dark .modal-notification.success {
+    background-color: var(--success-600);
+}
+
+.modal-notification.error {
+    background-color: var(--danger-500);
+    color: white;
+}
+
+.dark .modal-notification.error {
+    background-color: var(--danger-600);
+}
+
+.modal-notification h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.modal-notification p {
+    font-size: 1rem;
 }

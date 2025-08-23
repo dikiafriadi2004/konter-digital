@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Cms\MenuController;
 use App\Http\Controllers\Cms\PageController;
 use App\Http\Controllers\Cms\PostController;
+use App\Http\Controllers\Cms\SettingController;
 use App\Http\Controllers\Cms\CategoryController;
 use App\Http\Controllers\Cms\DashboardController;
 
@@ -59,6 +60,10 @@ Route::middleware('auth')->group(function () {
 
         // update order
         Route::post('menus/update-order', [MenuController::class, 'updateOrder'])->name('menus.updateOrder');
+
+        // Settings
+        Route::get('settings', [SettingController::class, 'edit'])->name('cms.settings.edit');
+        Route::post('settings', [SettingController::class, 'update'])->name('cms.settings.update');
     });
 });
 

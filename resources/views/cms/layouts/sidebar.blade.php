@@ -79,7 +79,7 @@
         </a>
 
         <!-- Settings -->
-        <a href="settings.html"
+        <a href="{{ route('cms.settings.edit') }}"
             class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
             <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
