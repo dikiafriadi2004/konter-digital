@@ -1,12 +1,8 @@
 <aside id="sidebar"
     class="bg-white dark:bg-slate-800 w-64 fixed inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg">
+    <!-- Logo & Title -->
     <div class="p-4 flex items-center justify-center border-b border-slate-200 dark:border-slate-700">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-500" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"
-                clip-rule="evenodd" />
-        </svg>
-        <h1 class="text-2xl font-bold ml-2 text-slate-800 dark:text-white">AdminPanel</h1>
+        <img src="{{ asset('back/assets/img/logo.png') }}" alt="Logo" class="h-50 w-50 object-contain">
     </div>
 
     <nav id="main-nav" class="mt-4 px-2 space-y-1">
