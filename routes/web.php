@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Cms\MenuController;
 use App\Http\Controllers\Cms\PageController;
 use App\Http\Controllers\Cms\PostController;
+use App\Http\Controllers\Cms\RoleController;
+use App\Http\Controllers\Cms\UserController;
+use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\SettingController;
 use App\Http\Controllers\Cms\CategoryController;
 use App\Http\Controllers\Cms\DashboardController;
@@ -14,12 +16,13 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::prefix('cms')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('cms.dashboard.index');
+
+        // Profile routes
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('cms.profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('cms.profile.update');
 
         // Resource routes for categories
         Route::resource('categories', CategoryController::class);
@@ -61,9 +64,19 @@ Route::middleware('auth')->group(function () {
         // update order
         Route::post('menus/update-order', [MenuController::class, 'updateOrder'])->name('menus.updateOrder');
 
+        Route::resource('/roles', RoleController::class);
+
         // Settings
         Route::get('settings', [SettingController::class, 'edit'])->name('cms.settings.edit');
         Route::post('settings', [SettingController::class, 'update'])->name('cms.settings.update');
+
+        // Users
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('users', [UserController::class, 'store'])->name('users.store');
+        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 });
 

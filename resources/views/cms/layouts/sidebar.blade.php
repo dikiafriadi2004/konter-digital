@@ -64,7 +64,7 @@
         </a>
 
         <!-- Users -->
-        <a href="settings.html"
+        <a href="{{ route('users.index') }}"
             class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
             <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -72,6 +72,18 @@
                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 13a5.975 5.975 0 013 5.197M15 21a6 6 0 00-9-5.197" />
             </svg>
             Users
+        </a>
+
+        <!-- Roles -->
+        <a href="{{ route('roles.index') }}"
+            class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
+            <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+            </svg>
+            Roles
         </a>
 
         <!-- Settings -->

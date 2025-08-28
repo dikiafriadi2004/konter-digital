@@ -60,8 +60,6 @@
                 <div class="relative">
                     <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none"
                         aria-haspopup="true" aria-expanded="false">
-                        <img class="h-9 w-9 rounded-full object-cover"
-                            src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User avatar">
                         <div class="hidden md:block text-left">
                             <div class="text-sm font-semibold">Halo, {{ Auth::user()->name }}</div>
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ Auth::user()->username }}</div>
@@ -70,12 +68,9 @@
                     <div id="user-menu"
                         class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 focus:outline-none"
                         role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
-                        <a href="#"
+                        <a href="{{ route('cms.profile.edit') }}"
                             class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
-                            role="menuitem">Profil</a>
-                        <a href="#"
-                            class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
-                            role="menuitem">Pengaturan</a>
+                            role="menuitem">Profile</a>
 
                         <a href="#"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
