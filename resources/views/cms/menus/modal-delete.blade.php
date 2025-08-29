@@ -1,21 +1,30 @@
-<!-- Modal Konfirmasi Hapus (letakkan sekali di halaman) -->
-<div id="deleteModal" class="fixed inset-0 hidden bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
-        <h3 class="text-lg font-semibold mb-2">Confirm Delete</h3>
-        <p class="text-sm text-slate-600 mb-6">Are you sure you want to delete this menu? <b>{{ $menu->title }}</b></p>
+<!-- Delete Modal -->
+<div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg w-96 p-6">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Confirm Delete</h2>
+        <p id="delete-modal-text" class="text-gray-600 dark:text-gray-300 mb-6">
+            Are you sure you want to delete this menu?
+        </p>
 
-        <div class="flex justify-end space-x-2">
-            <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+        <div class="flex justify-end space-x-3">
+            <!-- tombol batal -->
+            <button type="button" onclick="closeModal()"
+                class="px-4 py-2 rounded-lg bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100 hover:bg-gray-400">
                 Cancel
             </button>
 
-            <form id="deleteForm" method="POST" class="inline">
+            <!-- tombol hapus -->
+            <form id="delete-form" method="POST" class="inline">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                <button type="submit" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
                     Yes, Delete
                 </button>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    
+</script>

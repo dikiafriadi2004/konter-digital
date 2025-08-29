@@ -20,7 +20,6 @@ return [
             'Category Show',
             'Category Create',
             'Category Edit',
-            'Category Detail',
             'Category Delete'
         ],
         'Manage Roles' => [
@@ -44,9 +43,7 @@ return [
             'Landing Show'
         ],
         'Manage Menus' => [
-            'Menu Show',
             'Menu Create',
-            'Menu Edit',
             'Menu Delete'
         ],
     ],

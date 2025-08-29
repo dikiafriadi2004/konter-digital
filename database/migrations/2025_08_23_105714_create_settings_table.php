@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('favicon')->nullable();
             $table->string('office_address')->nullable();
             $table->string('facebook')->nullable();
+            $table->string('twitter')->nullable();
             $table->string('instagram')->nullable();
             $table->string('telegram')->nullable();
             $table->string('telegram_channel')->nullable();

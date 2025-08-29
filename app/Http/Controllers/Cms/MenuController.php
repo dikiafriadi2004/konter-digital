@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cms;
 use App\Models\Cms\Menu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Cms\Page;
 use Illuminate\Support\Facades\DB;
 
 class MenuController extends Controller
@@ -23,27 +22,25 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'      => 'required|string|max:255',
-            'type'       => 'required|string|in:home,blog,blog_detail,contact,privacy,about,custom',
-            'url'        => 'nullable|string|max:255',
-            'parent_id'  => 'nullable|exists:menus,id',
+            'title'     => 'required|string|max:255',
+            'type'      => 'required|string|in:home,blog,blog_detail,contact,privacy,about,custom',
+            'url'       => 'nullable|string|max:255',
+            'parent_id' => 'nullable|exists:menus,id',
         ]);
 
         $data = [
             'title'     => $request->title,
             'type'      => $request->type,
-            'parent_id' => $request->parent_id, // simpan parent
+            'parent_id' => $request->parent_id ?: null,
         ];
 
-        if ($request->type !== 'custom') {
-            $data['url'] = $this->getUrlFromType($request->type);
-        } else {
-            $data['url'] = $request->url;
-        }
+        $data['url'] = $request->type !== 'custom'
+            ? $this->getUrlFromType($request->type)
+            : $request->url;
 
-        // hitung order terakhir dari parent
-        $lastOrder = Menu::where('parent_id', $request->parent_id)->max('order');
-        $data['order'] = is_null($lastOrder) ? 0 : $lastOrder + 1;
+        // set order terakhir berdasarkan parent
+        $lastOrder = Menu::where('parent_id', $data['parent_id'])->max('order') ?? 0;
+        $data['order'] = $lastOrder + 1;
 
         Menu::create($data);
 
@@ -53,23 +50,21 @@ class MenuController extends Controller
     public function update(Request $request, Menu $menu)
     {
         $request->validate([
-            'title'      => 'required|string|max:255',
-            'type'       => 'required|string|in:home,blog,blog_detail,contact,privacy,about,custom',
-            'url'        => 'nullable|string|max:255',
-            'parent_id'  => 'nullable|exists:menus,id|not_in:' . $menu->id, // jangan bisa jadi anak sendiri
+            'title'     => 'required|string|max:255',
+            'type'      => 'required|string|in:home,blog,blog_detail,contact,privacy,about,custom',
+            'url'       => 'nullable|string|max:255',
+            'parent_id' => 'nullable|exists:menus,id',
         ]);
 
         $data = [
             'title'     => $request->title,
             'type'      => $request->type,
-            'parent_id' => $request->parent_id,
+            'parent_id' => $request->parent_id ?: null,
         ];
 
-        if ($request->type !== 'custom') {
-            $data['url'] = $this->getUrlFromType($request->type);
-        } else {
-            $data['url'] = $request->url;
-        }
+        $data['url'] = $request->type !== 'custom'
+            ? $this->getUrlFromType($request->type)
+            : $request->url;
 
         $menu->update($data);
 
@@ -78,7 +73,6 @@ class MenuController extends Controller
 
     public function destroy(Menu $menu)
     {
-        // hapus semua anak secara rekursif
         $this->deleteChildren($menu);
         $menu->delete();
 
@@ -87,30 +81,45 @@ class MenuController extends Controller
 
     public function reorder(Request $request)
     {
-        $menus = $request->input('menus');
-        if (!$menus || !is_array($menus)) {
-            return response()->json(['success' => false, 'message' => 'Invalid data']);
+        if (!$request->has('menus')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No menu data received'
+            ], 400);
         }
 
-        $this->saveOrder($menus, null);
+        DB::beginTransaction();
+        try {
+            $menus = $request->input('menus');
+            $this->saveOrder($menus, null);
 
-        return response()->json(['success' => true, 'message' => 'Menu berhasil diurutkan']);
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     private function saveOrder(array $menus, $parentId = null)
     {
-        foreach ($menus as $index => $menu) {
-            Menu::where('id', $menu['id'])->update([
-                'order' => $index + 1,
-                'parent_id' => $parentId,
+        foreach ($menus as $index => $menuData) {
+            $menu = Menu::find($menuData['id']);
+            if (!$menu) continue;
+
+            $menu->update([
+                'order'     => $index + 1,
+                'parent_id' => $parentId === null ? null : $parentId,
             ]);
 
-            if (!empty($menu['children'])) {
-                $this->saveOrder($menu['children'], $menu['id']);
+            if (!empty($menuData['children']) && is_array($menuData['children'])) {
+                $this->saveOrder($menuData['children'], $menu->id);
             }
         }
     }
-
 
     private function deleteChildren(Menu $menu)
     {

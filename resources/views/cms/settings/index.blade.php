@@ -92,6 +92,11 @@
                                 class="w-full rounded-md border-slate-300 shadow-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3">
                         </div>
                         <div class="mb-4">
+                            <label class="block text-sm font-medium mb-1">Twitter</label>
+                            <input type="url" name="twitter" value="{{ old('twitter', $setting->twitter) }}"
+                                class="w-full rounded-md border-slate-300 shadow-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3">
+                        </div>
+                        <div class="mb-4">
                             <label class="block text-sm font-medium mb-1">Instagram</label>
                             <input type="url" name="instagram" value="{{ old('instagram', $setting->instagram) }}"
                                 class="w-full rounded-md border-slate-300 shadow-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3">
