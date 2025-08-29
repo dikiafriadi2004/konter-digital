@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cms;
 use App\Models\Cms\Menu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Cms\Page;
 use Illuminate\Support\Facades\DB;
 
 class MenuController extends Controller
@@ -12,8 +13,8 @@ class MenuController extends Controller
     public function index()
     {
         $menus = Menu::whereNull('parent_id')
+            ->with('childrenRecursive')
             ->orderBy('order')
-            ->with('children')
             ->get();
 
         return view('cms.menus.index', compact('menus'));
@@ -22,55 +23,113 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string',
-            'url'   => 'required|string',
+            'title'      => 'required|string|max:255',
+            'type'       => 'required|string|in:home,blog,blog_detail,contact,privacy,about,custom',
+            'url'        => 'nullable|string|max:255',
+            'parent_id'  => 'nullable|exists:menus,id',
         ]);
 
-        // hitung order terakhir
-        $lastOrder = Menu::max('order') ?? 0;
+        $data = [
+            'title'     => $request->title,
+            'type'      => $request->type,
+            'parent_id' => $request->parent_id, // simpan parent
+        ];
 
-        Menu::create([
-            'title' => $request->title,
-            'url'   => $request->url,
-            'parent_id' => $request->parent_id ?? null,
-            'order' => $lastOrder + 1,
-        ]);
+        if ($request->type !== 'custom') {
+            $data['url'] = $this->getUrlFromType($request->type);
+        } else {
+            $data['url'] = $request->url;
+        }
 
-        return back()->with('success', 'Menu berhasil ditambahkan');
+        // hitung order terakhir dari parent
+        $lastOrder = Menu::where('parent_id', $request->parent_id)->max('order');
+        $data['order'] = is_null($lastOrder) ? 0 : $lastOrder + 1;
+
+        Menu::create($data);
+
+        return back()->with('success', 'Menu created successfully.');
     }
 
-    public function edit(Menu $menu)
+    public function update(Request $request, Menu $menu)
     {
-        return view('cms.menus.edit', compact('menu'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $menu = Menu::findOrFail($id);
-        $menu->update([
-            'title' => $request->title,
-            'url' => $request->url,
+        $request->validate([
+            'title'      => 'required|string|max:255',
+            'type'       => 'required|string|in:home,blog,blog_detail,contact,privacy,about,custom',
+            'url'        => 'nullable|string|max:255',
+            'parent_id'  => 'nullable|exists:menus,id|not_in:' . $menu->id, // jangan bisa jadi anak sendiri
         ]);
 
-        return response()->json(['status' => 'success']);
-    }
+        $data = [
+            'title'     => $request->title,
+            'type'      => $request->type,
+            'parent_id' => $request->parent_id,
+        ];
 
+        if ($request->type !== 'custom') {
+            $data['url'] = $this->getUrlFromType($request->type);
+        } else {
+            $data['url'] = $request->url;
+        }
+
+        $menu->update($data);
+
+        return back()->with('success', 'Menu updated successfully.');
+    }
 
     public function destroy(Menu $menu)
     {
+        // hapus semua anak secara rekursif
+        $this->deleteChildren($menu);
         $menu->delete();
-        return back()->with('success', 'Menu berhasil dihapus');
+
+        return back()->with('success', 'Menu deleted successfully.');
     }
 
-    public function updateOrder(Request $request)
+    public function reorder(Request $request)
     {
-        $order = $request->input('order');
-
-        foreach ($order as $item) {
-            Menu::where('id', $item['id'])
-                ->update(['order' => $item['position']]);
+        $menus = $request->input('menus');
+        if (!$menus || !is_array($menus)) {
+            return response()->json(['success' => false, 'message' => 'Invalid data']);
         }
 
-        return response()->json(['status' => 'success']);
+        $this->saveOrder($menus, null);
+
+        return response()->json(['success' => true, 'message' => 'Menu berhasil diurutkan']);
+    }
+
+    private function saveOrder(array $menus, $parentId = null)
+    {
+        foreach ($menus as $index => $menu) {
+            Menu::where('id', $menu['id'])->update([
+                'order' => $index + 1,
+                'parent_id' => $parentId,
+            ]);
+
+            if (!empty($menu['children'])) {
+                $this->saveOrder($menu['children'], $menu['id']);
+            }
+        }
+    }
+
+
+    private function deleteChildren(Menu $menu)
+    {
+        foreach ($menu->children as $child) {
+            $this->deleteChildren($child);
+            $child->delete();
+        }
+    }
+
+    private function getUrlFromType(string $type): ?string
+    {
+        return match ($type) {
+            'home'        => '/',
+            'blog'        => '/blog',
+            'blog_detail' => '/blog/{slug}',
+            'contact'     => '/contact',
+            'privacy'     => '/privacy-policy',
+            'about'       => '/about-us',
+            default       => null,
+        };
     }
 }

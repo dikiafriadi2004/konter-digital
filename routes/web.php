@@ -56,14 +56,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('pages/{id}/force-delete', [PageController::class, 'forceDelete'])->name('cms.pages.force-delete');
 
         // Menu
-        Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
-        Route::post('menus', [MenuController::class, 'store'])->name('menus.store');
-        Route::put('menus/{menu}', [MenuController::class, 'update'])->name('menus.update');
-        Route::delete('menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
+        Route::resource('menus', MenuController::class);
+        Route::post('menus/reorder', [MenuController::class, 'reorder'])->name('menus.reorder');
 
-        // update order
-        Route::post('menus/update-order', [MenuController::class, 'updateOrder'])->name('menus.updateOrder');
-
+        // Roles
         Route::resource('/roles', RoleController::class);
 
         // Settings

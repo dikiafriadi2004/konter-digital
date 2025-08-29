@@ -1,36 +1,14 @@
 @extends('cms.layouts.app')
 
-@section('title', 'Menus')
-
-@push('css')
-    <style>
-        @keyframes fade-in-down {
-            0% {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in-down {
-            animation: fade-in-down 0.3s ease-out;
-        }
-    </style>
-@endpush
-
 @section('content')
     <main class="flex-grow p-4 sm:p-6 lg:p-8">
-        {{-- Breadcrumb --}}
         <nav class="mb-6" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
-                    <a href="{{ route('cms.dashboard.index') }}"
+                    <a href="{{ route('menus.index') }}"
                         class="inline-flex items-center text-sm font-medium text-slate-700 hover:text-primary-600 dark:text-slate-400 dark:hover:text-white">
-                        <svg class="w-3 h-3 me-2.5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                            viewBox="0 0 20 20">
                             <path
                                 d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                         </svg>
@@ -39,227 +17,239 @@
                 </li>
                 <li aria-current="page">
                     <div class="flex items-center">
-                        <svg class="rtl:rotate-180 w-3 h-3 text-slate-400 mx-1" xmlns="http://www.w3.org/2000/svg"
-                            fill="none" viewBox="0 0 6 10">
+                        <svg class="rtl:rotate-180 w-3 h-3 text-slate-400 mx-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="m1 9 4-4-4-4" />
                         </svg>
-                        <span class="ms-1 text-sm font-medium text-slate-500 md:ms-2 dark:text-slate-400">
-                            Menu Builder
-                        </span>
+                        <span class="ms-1 text-sm font-medium text-slate-500 md:ms-2 dark:text-slate-400">List
+                            Menu</span>
                     </div>
                 </li>
             </ol>
         </nav>
 
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-            <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Menu Builder</h2>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Menu Management</h2>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Kolom Kiri: Tambah Item Menu Baru -->
-            <div class="lg:col-span-4 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md h-fit">
-                <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-6">Add New Menu Item</h3>
-                <form action="{{ route('menus.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="label" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                            Menu Labels
-                        </label>
-                        <input type="text" id="label" name="title"
-                            class="block w-full rounded-md border-slate-300 shadow-sm focus:outline-none focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3"
-                            placeholder="Contoh: Beranda, Tentang Kami" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="url" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                            URL / Page
-                        </label>
-                        <input type="text" id="url" name="url"
-                            class="block w-full rounded-md border-slate-300 shadow-sm focus:outline-none focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3"
-                            placeholder="Contoh: /about-us atau https://example.com" required>
-                    </div>
-                    <button type="submit"
-                        class="w-full px-5 py-2.5 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Add Menu Item
-                    </button>
-                </form>
-            </div>
+        {{-- GRID 2 CARD: kiri kecil (form), kanan lebar (list) --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {{-- LEFT: FORM (card kecil) --}}
+            <div class="lg:col-span-1">
+                <div class="bg-white shadow-md rounded-xl p-6">
+                    <h2 class="text-lg font-semibold mb-4">Add Menu</h2>
 
-            <!-- Kolom Kanan: Struktur Menu -->
-            <div class="lg:col-span-8 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-6">Menu Structure</h3>
-                <div id="menu-list" class="space-y-2">
-                    @forelse($menus as $menu)
-                        <div class="menu-item flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg cursor-move"
-                            data-id="{{ $menu->id }}">
-                            <div>
-                                <p class="font-semibold text-slate-800 dark:text-white">{{ $menu->title }}</p>
-                                <p class="text-sm text-slate-500 dark:text-slate-300">{{ $menu->url }}</p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <!-- Tombol Edit -->
-                                <button type="button"
-                                    onclick="openEditModal({{ $menu->id }}, '{{ $menu->title }}', '{{ $menu->url }}')"
-                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 dark:hover:bg-blue-900/60">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z" />
-                                    </svg>
-                                    Edit
-                                </button>
-
-                                <!-- Tombol Delete -->
-                                <button type="button"
-                                    onclick="openDeleteMenuModal({{ $menu->id }}, '{{ $menu->title }}')"
-                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 dark:bg-red-900/40 dark:text-red-400 dark:hover:bg-red-900/60">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
-                                    </svg>
-                                    Delete
-                                </button>
-                            </div>
-
+                    <form action="{{ route('menus.store') }}" method="POST">
+                        @csrf
+                        <!-- Judul Menu -->
+                        <div class="mb-4">
+                            <label for="title" class="block text-sm font-medium text-gray-700">Menu Title</label>
+                            <input type="text" name="title" id="title" class="w-full mt-1 p-2 border rounded-md"
+                                required>
                         </div>
-                    @empty
-                        <p class="text-slate-500 dark:text-slate-300">Belum ada menu</p>
-                    @endforelse
+
+                        <!-- Tipe Menu -->
+                        <div class="mb-4">
+                            <label for="type" class="block text-sm font-medium text-gray-700">Menu Type</label>
+                            <select name="type" id="type" class="w-full mt-1 p-2 border rounded-md" required>
+                                <option value="custom">Custom URL</option>
+                                <option value="home">Home</option>
+                                <option value="blog">Blog</option>
+                                <option value="contact">Contact</option>
+                                <option value="privacy">Privacy Policy</option>
+                                <option value="about">About Us</option>
+                            </select>
+                        </div>
+
+                        <!-- URL (hanya kalau custom) -->
+                        <div id="urlField" class="mb-4 hidden">
+                            <label for="url" class="block text-sm font-medium text-gray-700">URL</label>
+                            <input type="text" name="url" id="url" placeholder="/custom-url"
+                                class="w-full mt-1 p-2 border rounded-md">
+                        </div>
+
+                        <!-- Parent (opsional submenu) -->
+                        <div class="mb-4">
+                            <label for="parent_id" class="block text-sm font-medium text-gray-700">Parent Menu</label>
+                            <select name="parent_id" id="parent_id" class="w-full mt-1 p-2 border rounded-md">
+                                <option value="">-- There isn't any --</option>
+                                @foreach ($menus as $menu)
+                                    <option value="{{ $menu->id }}">{{ $menu->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Save
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            @include('cms.menus.modal-delete')
-            @include('cms.menus.modal-edit')
+
+            {{-- RIGHT: LIST (card lebar) --}}
+            <div class="lg:col-span-2">
+                <div class="bg-white shadow-md rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold">Menu Builder</h2>
+                        <p class="text-sm text-slate-500">Drag & drop untuk mengatur urutan / parent</p>
+                    </div>
+
+                    {{-- Penting: gunakan id="menu-list" --}}
+                    <ul id="menu-list" class="space-y-2">
+                        @include('cms.menus.partials.menu-list', ['menus' => $menus])
+                    </ul>
+                </div>
+            </div>
         </div>
+
+        @include('cms.menus.modal-delete')
     </main>
 @endsection
 
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
-        function openEditModal(id, title, url) {
-            document.getElementById('edit_menu_id').value = id;
-            document.getElementById('edit_menu_title').value = title;
-            document.getElementById('edit_menu_url').value = url;
+        // Toggle URL field jika type=custom
+        (function initTypeToggle() {
+            const typeEl = document.getElementById('type');
+            const urlField = document.getElementById('urlField');
 
-            let form = document.getElementById('editMenuForm');
-            form.action = "/cms/menus/" + id; // sesuaikan route update
+            function sync() {
+                urlField.classList.toggle('hidden', typeEl.value !== 'custom');
+            }
+            typeEl.addEventListener('change', sync);
+            sync();
+        })();
 
-            document.getElementById('editMenuModal').classList.remove('hidden');
+        // Ambil struktur nested (hanya id + children, sesuai controller kamu)
+        function getMenuStructure(container) {
+            const items = [];
+            container.querySelectorAll(':scope > li.menu-item').forEach((li) => {
+                const childUl = li.querySelector(':scope > ul.children');
+                items.push({
+                    id: li.getAttribute('data-id'),
+                    children: childUl ? getMenuStructure(childUl) : []
+                });
+            });
+            return items;
         }
 
-        function closeEditModal() {
-            document.getElementById('editMenuModal').classList.add('hidden');
+        // Flash modal (tetap seperti semula)
+        function showFlashModal(message, type = 'success') {
+            const modal = document.createElement('div');
+            modal.id = 'flashModal';
+            modal.className = 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
+            modal.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-xl p-6 w-96 text-center border-2 ${type === 'success' ? 'border-green-600' : 'border-red-600'}">
+            <h2 class="text-xl font-semibold mb-4 ${type === 'success' ? 'text-green-600' : 'text-red-600'}">
+                ${type === 'success' ? 'Success!' : 'Error!'}
+            </h2>
+            <p class="text-gray-700">${message}</p>
+            <div class="mt-6 flex justify-center">
+                <button id="closeFlashModal" class="px-4 py-2 rounded-lg text-white ${type === 'success' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}">OK</button>
+            </div>
+        </div>`;
+            document.body.appendChild(modal);
+            modal.querySelector('#closeFlashModal').addEventListener('click', () => modal.remove());
+            setTimeout(() => modal.remove(), 4000);
         }
 
-        // AJAX submit edit
-        document.getElementById("editMenuForm").addEventListener("submit", function(e) {
-            e.preventDefault();
+        // Simpan urutan (PAYLOAD: { menus: [...] } sesuai MenuController@reorder kamu)
+        function saveMenuOrder() {
+            const root = document.getElementById('menu-list');
+            const menus = getMenuStructure(root);
 
-            let id = document.getElementById("edit_menu_id").value;
-            let formData = new FormData(this);
-            formData.append('_method', 'PUT'); // untuk Laravel
-
-            fetch("/cms/menus/" + id, {
-                    method: "POST", // tetap POST karena spoof method
+            fetch("{{ route('menus.reorder') }}", {
+                    method: "POST",
                     headers: {
+                        "Content-Type": "application/json",
                         "X-CSRF-TOKEN": "{{ csrf_token() }}"
                     },
-                    body: formData
+                    body: JSON.stringify({
+                        menus
+                    })
                 })
-                .then(async res => {
-                    if (!res.ok) {
-                        let text = await res.text();
-                        throw new Error(text); // biar kelihatan error asli
-                    }
-                    return res.json();
+                .then(r => r.json())
+                .then(d => {
+                    if (d.success) showFlashModal('Menu sorted successfully!', 'success');
+                    else showFlashModal(d.message || 'Failed to save sequence.', 'error');
                 })
-                .then(data => {
-                    if (data.status === "success") {
-                        showToast("Menu updated successfully ✅");
-                        closeEditModal();
-                        setTimeout(() => window.location.reload(), 800);
-                    } else {
-                        showToast(data.message || "Failed to update menu ❌", "error");
-                    }
-                })
-                .catch(err => {
-                    console.error("Update error:", err);
-                    showToast("A server error occurred ❌", "error");
-                });
-        });
-    </script>
-
-    <script>
-        function openDeleteMenuModal(id, name) {
-            document.getElementById("deleteMenuModal").classList.remove("hidden");
-            document.getElementById("deleteMenuName").textContent = name;
-            document.getElementById("deleteMenuForm").action = "/cms/menus/" + id;
+                .catch(() => showFlashModal('Error server.', 'error'));
         }
 
-        function closeDeleteMenuModal() {
-            document.getElementById("deleteMenuModal").classList.add("hidden");
-        }
-    </script>
+        // Inisialisasi SortableJS (root + semua children)
+        document.addEventListener("DOMContentLoaded", function() {
+            const root = document.getElementById("menu-list");
+            if (!root) return;
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            let el = document.getElementById("menu-list");
-            new Sortable(el, {
+            // Root
+            new Sortable(root, {
+                group: "nested",
                 animation: 150,
-                onEnd: function() {
-                    let order = [];
-                    document.querySelectorAll("#menu-list .menu-item").forEach((el, index) => {
-                        order.push({
-                            id: el.dataset.id,
-                            position: index + 1
-                        });
-                    });
+                fallbackOnBody: true,
+                swapThreshold: 0.65,
+                onEnd: saveMenuOrder
+            });
 
-                    fetch("{{ route('menus.updateOrder') }}", {
-                            method: "POST",
-                            headers: {
-                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                order: order
-                            })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.status === "success") {
-                                showToast("Menu order updated successfully ✅");
-                            } else {
-                                showToast("Failed to update sequence ❌", "error");
-                            }
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            showToast("A server error occurred ❌", "error");
-                        });
-                }
+            // Semua nested children (sudah ada sejak render)
+            document.querySelectorAll("ul.children").forEach(function(ul) {
+                new Sortable(ul, {
+                    group: "nested",
+                    animation: 150,
+                    fallbackOnBody: true,
+                    swapThreshold: 0.65,
+                    onEnd: saveMenuOrder
+                });
             });
         });
 
-        // 🔔 Fungsi notifikasi (posisi TOP-RIGHT)
-        function showToast(message, type = "success") {
-            let bg = type === "success" ? "bg-green-600" : "bg-red-600";
-
-            let toast = document.createElement("div");
-            toast.className =
-                `fixed top-5 right-5 px-4 py-2 text-white text-sm rounded-lg shadow-lg ${bg} animate-fade-in-down z-50`;
-            toast.innerText = message;
-
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add("opacity-0");
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
+        // Modal Delete
+        function openDeleteModal(menuId) {
+            const form = document.getElementById('deleteForm');
+            form.action = "/menus/" + menuId; // sesuaikan dengan route resource menus.destroy
+            document.getElementById('deleteModal').classList.remove('hidden');
         }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        // Buka modal dan set action form ke URL delete yang sudah dibangkitkan blade
+        function openDeleteModal(deleteUrl) {
+            const modal = document.getElementById('deleteModal');
+            const form = document.getElementById('deleteForm');
+
+            if (!modal || !form) return console.error('Delete modal/form tidak ditemukan.');
+
+            form.action = deleteUrl;
+            modal.classList.remove('hidden');
+
+            // optional: fokus tombol "Batal" supaya keyboard-friendly
+            modal.querySelector('button[type="button"]').focus();
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            // kosongkan action agar tidak keliru kalau ingin reuse
+            const form = document.getElementById('deleteForm');
+            if (form) form.removeAttribute('action');
+        }
+
+        // tutup modal kalau klik backdrop
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('deleteModal');
+            if (!modal || modal.classList.contains('hidden')) return;
+            if (e.target === modal) closeDeleteModal();
+        });
+
+        // tutup modal pakai ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDeleteModal();
+        });
     </script>
 @endpush

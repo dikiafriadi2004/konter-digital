@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->string('title'); // nama menu
-            $table->string('url')->nullable(); // link (misal /about, /blog)
-            $table->unsignedBigInteger('parent_id')->nullable(); // untuk submenu
-            $table->integer('order')->default(0); // urutan menu
+            $table->string('title');
+            $table->string('type')->default('custom'); // home, blog, blog_detail, contact, privacy, about, custom
+            $table->string('url')->nullable(); // link khusus untuk type custom
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }
