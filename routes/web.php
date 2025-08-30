@@ -15,64 +15,82 @@ Route::get('/', function () {
     return view('front.home.index');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->prefix('cms')->group(function () {
 
-    Route::prefix('cms')->group(function () {
-        Route::get('dashboard', [DashboardController::class, 'index'])->name('cms.dashboard.index');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('cms.dashboard.index');
 
-        // Profile routes
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('cms.profile.edit');
-        Route::put('/profile', [ProfileController::class, 'update'])->name('cms.profile.update');
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('cms.profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('cms.profile.update');
 
-        // Resource routes for categories
+    // Categories
+    Route::middleware('permission:Category Show')->group(function () {
         Route::resource('categories', CategoryController::class);
+    });
 
-        // Post Routes
-        Route::get('posts', [PostController::class, 'index'])->name('cms.posts.index'); // List semua post
-        Route::get('posts/create', [PostController::class, 'create'])->name('cms.posts.create'); // Form tambah post
-        Route::post('posts', [PostController::class, 'store'])->name('cms.posts.store'); // Simpan post baru
-        Route::get('posts/{post}/edit', [PostController::class, 'edit'])->name('cms.posts.edit'); // Form edit
-        Route::put('posts/{post}', [PostController::class, 'update'])->name('cms.posts.update'); // Update post
-        Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('cms.posts.destroy'); // Soft delete
+    // Posts
+    Route::middleware([
+        'permission:Posts Show|Posts Create|Posts Edit|Posts Delete'
+    ])->group(function () {
+        Route::get('posts', [PostController::class, 'index'])->name('cms.posts.index');
+        Route::get('posts/create', [PostController::class, 'create'])->name('cms.posts.create')->middleware('permission:Posts Create');
+        Route::post('posts', [PostController::class, 'store'])->name('cms.posts.store')->middleware('permission:Posts Create');
+        Route::get('posts/{post}/edit', [PostController::class, 'edit'])->name('cms.posts.edit')->middleware('permission:Posts Edit');
+        Route::put('posts/{post}', [PostController::class, 'update'])->name('cms.posts.update')->middleware('permission:Posts Edit');
+        Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('cms.posts.destroy')->middleware('permission:Posts Delete');
 
-
-        // Tambahan untuk trash
         Route::get('posts/trash', [PostController::class, 'trash'])->name('cms.posts.trash');
-
         Route::post('posts/{id}/restore', [PostController::class, 'restore'])->name('cms.posts.restore');
         Route::delete('posts/{id}/force-delete', [PostController::class, 'forceDelete'])->name('cms.posts.force-delete');
+    });
 
-        // Page Routes
+    // Pages
+    Route::middleware([
+        'permission:Pages Show|Pages Create|Pages Edit|Pages Delete'
+    ])->group(function () {
         Route::get('pages', [PageController::class, 'index'])->name('cms.pages.index');
-        Route::get('pages/create', [PageController::class, 'create'])->name('cms.pages.create');
-        Route::post('pages', [PageController::class, 'store'])->name('cms.pages.store');
-        Route::get('pages/{page}/edit', [PageController::class, 'edit'])->name('cms.pages.edit');
-        Route::put('pages/{page}', [PageController::class, 'update'])->name('cms.pages.update');
-        Route::delete('pages/{page}', [PageController::class, 'destroy'])->name('cms.pages.destroy');
+        Route::get('pages/create', [PageController::class, 'create'])->name('cms.pages.create')->middleware('permission:Pages Create');
+        Route::post('pages', [PageController::class, 'store'])->name('cms.pages.store')->middleware('permission:Pages Create');
+        Route::get('pages/{page}/edit', [PageController::class, 'edit'])->name('cms.pages.edit')->middleware('permission:Pages Edit');
+        Route::put('pages/{page}', [PageController::class, 'update'])->name('cms.pages.update')->middleware('permission:Pages Edit');
+        Route::delete('pages/{page}', [PageController::class, 'destroy'])->name('cms.pages.destroy')->middleware('permission:Pages Delete');
 
-        // Trash
         Route::get('pages/trash', [PageController::class, 'trash'])->name('cms.pages.trash');
         Route::post('pages/{id}/restore', [PageController::class, 'restore'])->name('cms.pages.restore');
         Route::delete('pages/{id}/force-delete', [PageController::class, 'forceDelete'])->name('cms.pages.force-delete');
+    });
 
-        // Menu
+    // Menus
+    Route::middleware([
+        'permission:Menu Create|Menu Delete'
+    ])->group(function () {
         Route::resource('menus', MenuController::class);
         Route::post('menus/reorder', [MenuController::class, 'reorder'])->name('menus.reorder');
+    });
 
-        // Roles
+    // Roles
+    Route::middleware([
+        'permission:Role Show|Role Create|Role Edit|Role Delete'
+    ])->group(function () {
         Route::resource('/roles', RoleController::class);
+    });
 
-        // Settings
+    // Settings
+    Route::middleware('permission:Settings Show')->group(function () {
         Route::get('settings', [SettingController::class, 'edit'])->name('cms.settings.edit');
         Route::post('settings', [SettingController::class, 'update'])->name('cms.settings.update');
+    });
 
-        // Users
+    // Users
+    Route::middleware([
+        'permission:User Show|User Create|User Edit|User Delete'
+    ])->group(function () {
         Route::get('users', [UserController::class, 'index'])->name('users.index');
-        Route::get('users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('users', [UserController::class, 'store'])->name('users.store');
-        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('users/create', [UserController::class, 'create'])->name('users.create')->middleware('permission:User Create');
+        Route::post('users', [UserController::class, 'store'])->name('users.store')->middleware('permission:User Create');
+        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:User Edit');
+        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:User Edit');
+        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy')->middleware('permission:User Delete');
     });
 });
 

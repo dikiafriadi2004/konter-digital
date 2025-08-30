@@ -33,7 +33,6 @@ return [
             'User Show',
             'User Create',
             'User Edit',
-            'User Detail',
             'User Delete'
         ],
         'Manage Settings' => [

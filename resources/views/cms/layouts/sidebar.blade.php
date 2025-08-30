@@ -17,7 +17,8 @@
             Dashboard
         </a>
 
-        <!-- Posts (submenu) -->
+        <!-- Posts & Categories submenu -->
+        @canany(['Category Show', 'Posts Show'])
         <div>
             <button id="submenu-toggle"
                 class="w-full nav-link flex items-center justify-between px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
@@ -35,14 +36,20 @@
                 </svg>
             </button>
             <div id="submenu" class="hidden pl-8 mt-1 space-y-1">
+                @can('Category Show')
                 <a href="{{ route('categories.index') }}"
                     class="nav-link submenu-link block px-4 py-2 text-sm rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 border-l-4 border-transparent">Categories</a>
+                @endcan
+                @can('Posts Show')
                 <a href="{{ route('cms.posts.index') }}"
                     class="nav-link submenu-link block px-4 py-2 text-sm rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 border-l-4 border-transparent">Posts</a>
+                @endcan
             </div>
         </div>
+        @endcanany
 
         <!-- Pages -->
+        @can('Pages Show')
         <a href="{{ route('cms.pages.index') }}"
             class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
             <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -52,8 +59,10 @@
             </svg>
             Pages
         </a>
+        @endcan
 
-        <!-- New Menu Builder Link -->
+        <!-- Menu Builder -->
+        @canany(['Menu Create', 'Menu Delete'])
         <a href="{{ route('menus.index') }}"
             class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 border-l-4 border-transparent">
             <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -62,8 +71,10 @@
             </svg>
             Menu Builder
         </a>
+        @endcanany
 
         <!-- Users -->
+        @can('User Show')
         <a href="{{ route('users.index') }}"
             class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
             <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -73,8 +84,10 @@
             </svg>
             Users
         </a>
+        @endcan
 
         <!-- Roles -->
+        @can('Role Show')
         <a href="{{ route('roles.index') }}"
             class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
             <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -85,8 +98,10 @@
             </svg>
             Roles
         </a>
+        @endcan
 
         <!-- Settings -->
+        @can('Settings Show')
         <a href="{{ route('cms.settings.edit') }}"
             class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
             <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -98,5 +113,6 @@
             </svg>
             Settings
         </a>
+        @endcan
     </nav>
 </aside>
