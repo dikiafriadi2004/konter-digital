@@ -4,11 +4,13 @@
             <span class="font-medium text-gray-800">{{ $menu->title }}</span>
 
             <div class="flex space-x-2">
-                <button type="button"
-                    onclick="openDeleteModal('{{ route('menus.destroy', $menu->id) }}', '{{ addslashes($menu->title) }}')"
-                    class="px-2 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">
-                    Delete
-                </button>
+                @can('Menu Delete')
+                    <button type="button"
+                        onclick="openDeleteModal('{{ route('menus.destroy', $menu->id) }}', '{{ addslashes($menu->title) }}')"
+                        class="px-2 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">
+                        Delete
+                    </button>
+                @endcan
             </div>
         </div>
 

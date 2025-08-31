@@ -24,7 +24,8 @@
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="m1 9 4-4-4-4" />
                         </svg>
-                        <span class="ms-1 text-sm font-medium text-slate-500 md:ms-2 dark:text-slate-400">List Category</span>
+                        <span class="ms-1 text-sm font-medium text-slate-500 md:ms-2 dark:text-slate-400">List
+                            Category</span>
                     </div>
                 </li>
             </ol>
@@ -101,17 +102,21 @@
                                     <td class="px-6 py-4">{{ $category->slug }}</td>
                                     <td class="px-6 py-4">{{ $category->description ?? '-' }}</td>
                                     <td class="px-6 py-4 text-right space-x-2">
-                                        <!-- tombol Edit -->
-                                        <button onclick="openModal('modal-{{ $category->id }}')"
-                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                            Edit
-                                        </button>
+                                        @can('Category Edit')
+                                            <!-- tombol Edit -->
+                                            <button onclick="openModal('modal-{{ $category->id }}')"
+                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                Edit
+                                            </button>
+                                        @endcan
 
-                                        <!-- tombol Hapus -->
-                                        <button type="button" onclick="openModal('delete-modal-{{ $category->id }}')"
-                                            class="font-medium text-red-600 dark:text-red-500 hover:underline">
-                                            Delete
-                                        </button>
+                                        @can('Category Delete')
+                                            <!-- tombol Hapus -->
+                                            <button type="button" onclick="openModal('delete-modal-{{ $category->id }}')"
+                                                class="font-medium text-red-600 dark:text-red-500 hover:underline">
+                                                Delete
+                                            </button>
+                                        @endcan
                                     </td>
                                 </tr>
 

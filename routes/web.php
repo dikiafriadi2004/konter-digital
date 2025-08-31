@@ -10,6 +10,7 @@ use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\SettingController;
 use App\Http\Controllers\Cms\CategoryController;
 use App\Http\Controllers\Cms\DashboardController;
+use App\Http\Controllers\Cms\LandingController;
 
 Route::get('/', function () {
     return view('front.home.index');
@@ -79,6 +80,12 @@ Route::middleware('auth')->prefix('cms')->group(function () {
     Route::middleware('permission:Settings Show')->group(function () {
         Route::get('settings', [SettingController::class, 'edit'])->name('cms.settings.edit');
         Route::post('settings', [SettingController::class, 'update'])->name('cms.settings.update');
+    });
+
+    // Landing
+    Route::middleware('permission:Landing Show')->group(function () {
+        Route::get('landing', [LandingController::class, 'edit'])->name('cms.landing.edit');
+        Route::post('landing', [LandingController::class, 'update'])->name('cms.landing.update');
     });
 
     // Users

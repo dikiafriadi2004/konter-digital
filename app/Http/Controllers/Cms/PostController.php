@@ -16,6 +16,12 @@ class PostController extends Controller
     {
         $query = Post::with(['user', 'category']);
 
+        // Filter post sesuai permission
+        if (!Auth::user()->hasAnyRole(['Super Admin', 'Admin'])) {
+            // User biasa hanya melihat post miliknya sendiri
+            $query->where('user_id', Auth::id());
+        }
+
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
@@ -69,12 +75,22 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+        // Hanya Super Admin/Admin atau owner yang bisa edit
+        if (!Auth::user()->hasAnyRole(['Super Admin', 'Admin']) && $post->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $categories = Category::all();
         return view('cms.posts.edit', compact('post', 'categories'));
     }
 
     public function update(Request $request, Post $post)
     {
+        // Hanya Super Admin/Admin atau owner yang bisa update
+        if (!Auth::user()->hasAnyRole(['Super Admin', 'Admin']) && $post->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:posts,slug,' . $post->id,
@@ -101,19 +117,37 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
+        // Hanya Super Admin/Admin atau owner yang bisa delete
+        if (!Auth::user()->hasAnyRole(['Super Admin', 'Admin']) && $post->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $post->delete();
         return redirect()->route('cms.posts.index')->with('success', 'Post moved to trash!');
     }
 
     public function trash()
     {
-        $posts = Post::onlyTrashed()->with('user')->paginate(10);
+        $query = Post::onlyTrashed()->with('user');
+
+        // Filter trash sesuai permission
+        if (!Auth::user()->hasAnyRole(['Super Admin', 'Admin'])) {
+            $query->where('user_id', Auth::id());
+        }
+
+        $posts = $query->paginate(10);
         return view('cms.posts.trash', compact('posts'));
     }
 
     public function restore($id)
     {
         $post = Post::onlyTrashed()->findOrFail($id);
+
+        // Hanya Super Admin/Admin atau owner yang bisa restore
+        if (!Auth::user()->hasAnyRole(['Super Admin', 'Admin']) && $post->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $post->restore();
         return redirect()->route('cms.posts.trash')->with('success', 'Post restored successfully!');
     }
@@ -122,7 +156,11 @@ class PostController extends Controller
     {
         $post = Post::onlyTrashed()->findOrFail($id);
 
-        // Cek thumbnail real-time sebelum hapus
+        // Hanya Super Admin/Admin yang bisa hapus permanen
+        if (!Auth::user()->hasAnyRole(['Super Admin', 'Admin'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
         if ($post->thumbnail) {
             $fullPath = storage_path('app/public/' . $post->thumbnail);
             if (file_exists($fullPath)) {

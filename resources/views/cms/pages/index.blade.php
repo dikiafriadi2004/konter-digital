@@ -13,7 +13,7 @@
                             viewBox="0 0 20 20">
                             <path
                                 d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0
-                                                                            0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                                                                                        0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                         </svg>
                         Pages
                     </a>
@@ -34,15 +34,17 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Page Management</h2>
             <div class="flex flex-wrap gap-3">
-                <!-- Tombol Tambah -->
-                <a href="{{ route('cms.pages.create') }}"
-                    class="inline-flex items-center justify-center px-4 py-2 bg-primary-600 text-white rounded-lg shadow-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Add New Page
-                </a>
+                @can('Pages Show')
+                    <!-- Tombol Tambah -->
+                    <a href="{{ route('cms.pages.create') }}"
+                        class="inline-flex items-center justify-center px-4 py-2 bg-primary-600 text-white rounded-lg shadow-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add New Page
+                    </a>
+                @endcan
 
                 <!-- Tombol Trash -->
                 <a href="{{ route('cms.pages.trash') }}"
@@ -101,30 +103,33 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 flex items-center space-x-3">
-                                    <!-- Tombol Edit -->
-                                    <a href="{{ route('cms.pages.edit', $page->id) }}"
-                                        class="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Edit">
-                                        <!-- Icon Pencil -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.688-1.688a1.875 1.875 0 112.652 2.652l-9.193 9.193a4.5 4.5 0 01-1.897 1.13L6.75 16.5l.726-3.862a4.5 4.5 0 011.13-1.897l8.256-8.254zM19.5 7.125L16.875 4.5M4.5 19.5h15" />
-                                        </svg>
-                                    </a>
+                                    @can('Pages Edit')
+                                        <!-- Tombol Edit -->
+                                        <a href="{{ route('cms.pages.edit', $page->id) }}"
+                                            class="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Edit">
+                                            <!-- Icon Pencil -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16.862 4.487l1.688-1.688a1.875 1.875 0 112.652 2.652l-9.193 9.193a4.5 4.5 0 01-1.897 1.13L6.75 16.5l.726-3.862a4.5 4.5 0 011.13-1.897l8.256-8.254zM19.5 7.125L16.875 4.5M4.5 19.5h15" />
+                                            </svg>
+                                        </a>
+                                    @endcan
 
-                                    <!-- Tombol Hapus -->
-                                    <button type="submit"
-                                        class="text-red-600 hover:text-red-800 dark:text-red-400 flex items-center deleteBtn"
-                                        data-id="{{ $page->id }}" data-title="{{ $page->title }}">
-                                        <!-- Icon Trash -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M6 7.5h12M9.75 7.5V6a1.5 1.5 0 011.5-1.5h1.5A1.5 1.5 0 0114.25 6v1.5m-6 0h7.5M9.75 10.5v6m4.5-6v6M4.5 7.5h15l-.75 12a2.25 2.25 0 01-2.25 2.25H7.5A2.25 2.25 0 015.25 19.5L4.5 7.5z" />
-                                        </svg>
-                                    </button>
+                                    @can('Pages Delete')
+                                        <!-- Tombol Hapus -->
+                                        <button type="submit"
+                                            class="text-red-600 hover:text-red-800 dark:text-red-400 flex items-center deleteBtn"
+                                            data-id="{{ $page->id }}" data-title="{{ $page->title }}">
+                                            <!-- Icon Trash -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M6 7.5h12M9.75 7.5V6a1.5 1.5 0 011.5-1.5h1.5A1.5 1.5 0 0114.25 6v1.5m-6 0h7.5M9.75 10.5v6m4.5-6v6M4.5 7.5h15l-.75 12a2.25 2.25 0 01-2.25 2.25H7.5A2.25 2.25 0 015.25 19.5L4.5 7.5z" />
+                                            </svg>
+                                        </button>
+                                    @endcan
                                 </td>
-
                             </tr>
                         @empty
                             <tr>

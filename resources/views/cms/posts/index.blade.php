@@ -35,15 +35,17 @@
 
             <div class="flex gap-3 flex-wrap">
                 <!-- Add New Post Button -->
-                <a href="{{ route('cms.posts.create') }}"
-                    class="inline-flex items-center justify-center px-5 py-2 bg-primary-600 text-white rounded-lg shadow-md hover:bg-primary-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    Add New Post
-                </a>
+                @can('Posts Create')
+                    <a href="{{ route('cms.posts.create') }}"
+                        class="inline-flex items-center justify-center px-5 py-2 bg-primary-600 text-white rounded-lg shadow-md hover:bg-primary-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Add New Post
+                    </a>
+                @endcan
 
                 <!-- Trash Posts Button -->
                 <a href="{{ route('cms.posts.trash') }}"
@@ -57,7 +59,6 @@
                 </a>
             </div>
         </div>
-
 
         <!-- Filter Form -->
         <form method="GET" action="{{ route('cms.posts.index') }}"
@@ -147,11 +148,11 @@
                                 @elseif($post->status == 'archived') bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300 @endif">
                                         @switch($post->status)
                                             @case('published')
-                                                Diterbitkan
+                                                Published
                                             @break
 
                                             @case('draft')
-                                                Draf
+                                                Draft
                                             @break
 
                                             @default
@@ -162,39 +163,52 @@
                                 <td class="px-6 py-4">{{ $post->created_at->format('Y-m-d') }}</td>
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center space-x-2">
-                                        <a href="{{ route('cms.posts.edit', $post->id) }}"
-                                            class="p-2 text-slate-500 hover:text-primary-600">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z">
-                                                </path>
-                                            </svg>
-                                        </a>
 
-                                        <button data-title="{{ $post->title }}"
-                                            data-action="{{ route('cms.posts.destroy', $post->id) }}"
-                                            class="delete-post-btn p-2 text-slate-500 hover:text-red-600">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                </path>
-                                            </svg>
-                                        </button>
+                                        @can('Posts Edit')
+                                            {{-- Tombol Edit hanya pemilik --}}
+                                            @if ($post->user_id == Auth::id())
+                                                <a href="{{ route('cms.posts.edit', $post->id) }}"
+                                                    class="p-2 text-slate-500 hover:text-primary-600">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z">
+                                                        </path>
+                                                    </svg>
+                                                </a>
+                                            @endif
+                                        @endcan
 
+                                        @can('Posts Delete')
+                                            @if ($post->user_id == Auth::id() || Auth::user()->hasAnyRole(['Super Admin', 'Admin']))
+                                                <button data-title="{{ $post->title }}"
+                                                    data-action="{{ route('cms.posts.destroy', $post->id) }}"
+                                                    class="delete-post-btn p-2 text-slate-500 hover:text-red-600">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                        </path>
+                                                    </svg>
+                                                </button>
+                                            @endif
+                                        @endcan
+                                        {{-- Tombol Hapus --}}
 
-                                        <a href="#"
-                                            class="p-2 text-slate-500 hover:text-blue-600 open-post-detail-modal-trigger">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                                </path>
-                                            </svg>
-                                        </a>
+                                        @can('Posts Detail')
+                                            {{-- Tombol Detail --}}
+                                            <a href="#"
+                                                class="p-2 text-slate-500 hover:text-blue-600 open-post-detail-modal-trigger">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                                    </path>
+                                                </svg>
+                                            </a>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

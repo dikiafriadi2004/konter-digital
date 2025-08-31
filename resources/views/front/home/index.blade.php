@@ -19,17 +19,6 @@
                     <p class="mt-4 text-xl text-blue-200 leading-relaxed drop-shadow-md">
                         Cepat, Aman, Otomatis — Kelola pulsa dengan Konter Digital
                     </p>
-                    <div
-                        class="mt-10 flex flex-col items-center md:items-start space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                        <a href="contact.html"
-                            class="bg-cta-primary hover:bg-cta-hover text-white font-bold py-4 px-10 rounded-full transition duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-center">
-                            Coba Sekarang
-                        </a>
-                        <a href="privacy.html"
-                            class="bg-transparent border-2 border-white hover:bg-white hover:text-hero-gradient-end text-white font-bold py-4 px-10 rounded-full transition duration-300 shadow-md hover:shadow-xl text-center">
-                            Lihat Fitur
-                        </a>
-                    </div>
                     <a href="#"
                         class="mt-6 inline-flex items-center justify-center bg-gray-900/70 text-white rounded-full px-6 py-3 space-x-3 hover:bg-gray-900/90 transition duration-300 shadow-lg w-full sm:w-auto">
                         <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
