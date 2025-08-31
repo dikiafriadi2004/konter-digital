@@ -2,34 +2,28 @@
 
 namespace App\Http\Controllers\Cms;
 
-use Illuminate\Support\Facades\Storage;
 use App\Models\Cms\Post;
 use Illuminate\Support\Str;
 use App\Models\Cms\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $query = Post::with(['user', 'category']);
 
-        // Filter search
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        // Filter category
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        // Filter status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -40,18 +34,12 @@ class PostController extends Controller
         return view('cms.posts.index', compact('posts', 'categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $categories = Category::all();
         return view('cms.posts.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -62,7 +50,6 @@ class PostController extends Controller
         ]);
 
         $slug = Str::slug($request->title);
-
         $thumbnailPath = $request->file('thumbnail')?->store('thumbnails', 'public');
 
         Post::create([
@@ -80,26 +67,12 @@ class PostController extends Controller
         return redirect()->route('cms.posts.index')->with('success', 'Post created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Post $post)
     {
         $categories = Category::all();
         return view('cms.posts.edit', compact('post', 'categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Post $post)
     {
         $data = $request->validate([
@@ -113,42 +86,31 @@ class PostController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        // Handle thumbnail baru
         if ($request->hasFile('thumbnail')) {
-            // Hapus thumbnail lama jika ada
-            if ($post->thumbnail && Storage::disk('public')->exists($post->thumbnail)) {
-                Storage::disk('public')->delete($post->thumbnail);
+            if ($post->thumbnail && file_exists(storage_path('app/public/' . $post->thumbnail))) {
+                @unlink(storage_path('app/public/' . $post->thumbnail));
             }
-            // Simpan file baru
             $data['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
         } else {
-            // Biarkan thumbnail lama tetap
             $data['thumbnail'] = $post->thumbnail;
         }
 
         $post->update($data);
-
-        return redirect()->route('cms.posts.index')->with('success', 'Post berhasil diperbarui!');
+        return redirect()->route('cms.posts.index')->with('success', 'Post updated successfully!');
     }
 
-
-    // Soft delete (ke trash)
     public function destroy(Post $post)
     {
         $post->delete();
         return redirect()->route('cms.posts.index')->with('success', 'Post moved to trash!');
     }
 
-    // Lihat trash
     public function trash()
     {
-
         $posts = Post::onlyTrashed()->with('user')->paginate(10);
-
         return view('cms.posts.trash', compact('posts'));
     }
 
-    // Kembalikan dari trash
     public function restore($id)
     {
         $post = Post::onlyTrashed()->findOrFail($id);
@@ -156,23 +118,25 @@ class PostController extends Controller
         return redirect()->route('cms.posts.trash')->with('success', 'Post restored successfully!');
     }
 
-    // Hapus permanen
     public function forceDelete($id)
     {
         $post = Post::onlyTrashed()->findOrFail($id);
 
-        // Hapus thumbnail jika ada
+        // Cek thumbnail real-time sebelum hapus
         if ($post->thumbnail) {
-            // Gunakan disk public
-            if (Storage::disk('public')->exists($post->thumbnail)) {
-                Storage::disk('public')->delete($post->thumbnail);
+            $fullPath = storage_path('app/public/' . $post->thumbnail);
+            if (file_exists($fullPath)) {
+                @unlink($fullPath);
+                Log::info("Thumbnail {$post->thumbnail} berhasil dihapus dari disk.");
+            } else {
+                Log::warning("Thumbnail {$post->thumbnail} TIDAK DITEMUKAN di disk!");
             }
         }
 
-        // Hapus post permanen
         $post->forceDelete();
+        Log::info("Post {$post->id} dihapus permanen.");
 
         return redirect()->route('cms.posts.trash')
-            ->with('success', 'Post successfully deleted permanently.');
+            ->with('success', 'Post permanently deleted!');
     }
 }

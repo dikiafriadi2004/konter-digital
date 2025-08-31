@@ -2,15 +2,12 @@
 
 namespace App\Models\Cms;
 
-use App\Models\User;
-use App\Models\Cms\Category;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -21,16 +18,29 @@ class Post extends Model
         'meta_description',
         'meta_keywords',
         'thumbnail',
-        'status'
+        'status',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(\App\Models\Cms\Category::class);
+    }
+
+    protected static function booted()
+    {
+        static::forceDeleted(function ($post) {
+            if ($post->thumbnail) {
+                $path = storage_path('app/public/' . $post->thumbnail);
+
+                if (file_exists($path)) {
+                    @unlink($path); // hapus file paksa
+                }
+            }
+        });
     }
 }

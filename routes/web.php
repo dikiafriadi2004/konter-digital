@@ -88,6 +88,13 @@ Route::middleware('auth')->prefix('cms')->group(function () {
         Route::get('users', [UserController::class, 'index'])->name('users.index');
         Route::get('users/create', [UserController::class, 'create'])->name('users.create')->middleware('permission:User Create');
         Route::post('users', [UserController::class, 'store'])->name('users.store')->middleware('permission:User Create');
+
+        // ---- TRASH / RESTORE / FORCE DELETE ----
+        Route::get('users/trash', [UserController::class, 'trash'])->name('users.trash');
+        Route::post('users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
+        Route::delete('users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
+        // ---------------------------------------
+
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:User Edit');
         Route::put('users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:User Edit');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy')->middleware('permission:User Delete');
