@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('meta_keywords')->nullable();
             $table->string('thumbnail')->nullable();
             $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->unsignedBigInteger('views')->default(0);
             $table->timestamps();
             $table->softDeletes(); // untuk fitur trash
         });

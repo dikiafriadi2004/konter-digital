@@ -19,6 +19,7 @@ class Post extends Model
         'meta_keywords',
         'thumbnail',
         'status',
+        'views',
     ];
 
     public function user()

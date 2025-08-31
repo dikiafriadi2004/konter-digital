@@ -7,33 +7,32 @@
         <!-- Hero Section - Diperbarui untuk kesan mewah, elegan, dan modern -->
         <section id="home"
             class="bg-gradient-to-br from-hero-gradient-start to-hero-gradient-end text-white relative overflow-hidden py-24 md:py-40">
-            <!-- Elemen dekoratif latar belakang (opsional, bisa dihapus jika terlalu kompleks) -->
-            <div class="absolute inset-0 z-0 opacity-10"
-                style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
 
             <div class="container mx-auto px-6 relative z-10 grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-center md:text-left scroll-animate">
                     <h1 class="text-5xl md:text-6xl font-black leading-tight tracking-tight drop-shadow-lg">
-                        Solusi Server Pulsa Modern untuk Bisnis Anda
+                        {{ $landing->title ?? 'Solusi Server Pulsa Modern untuk Bisnis Anda' }}
                     </h1>
                     <p class="mt-4 text-xl text-blue-200 leading-relaxed drop-shadow-md">
-                        Cepat, Aman, Otomatis — Kelola pulsa dengan Konter Digital
+                        {{ $landing->subtitle ?? 'Cepat, Aman, Otomatis — Kelola pulsa dengan Konter Digital' }}
                     </p>
-                    <a href="#"
-                        class="mt-6 inline-flex items-center justify-center bg-gray-900/70 text-white rounded-full px-6 py-3 space-x-3 hover:bg-gray-900/90 transition duration-300 shadow-lg w-full sm:w-auto">
-                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M14.5,9.13a2.3,2.3,0,0,1-1.55-2.22,2.42,2.42,0,0,1,2.42-2.43,2.39,2.39,0,0,1,2.42,2.43,2.3,2.3,0,0,1-1.55,2.22l-1.74.83Z M3,4.27,14.22,15.55l3.1-3.1L5.59,1,3,2.62Z M15.53,16.8,4.24,5.51,2.62,8.08,13.23,18.7l2.3-1.9Z M17.33,12.2a2.31,2.31,0,0,1,1.56,2.23,2.42,2.42,0,0,1-2.42,2.42,2.39,2.39,0,0,1-2.42-2.42,2.31,2.31,0,0,1,1.56-2.23l1.72-.83Z M20.4,11,17.7,12.35l-2.9,2.9,2.57,2.57,3-1.53Z" />
-                        </svg>
-                        <div class="text-left">
-                            <p class="text-xs uppercase opacity-80">Get it on</p>
-                            <p class="text-lg font-semibold">Google Play</p>
-                        </div>
-                    </a>
+                    @if ($landing && $landing->cta_google_play)
+                        <a href="{{ $landing->cta_google_play }}"
+                            class="mt-6 inline-flex items-center justify-center bg-gray-900/70 text-white rounded-full px-6 py-3 space-x-3 hover:bg-gray-900/90 transition duration-300 shadow-lg w-full sm:w-auto">
+                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M14.5,9.13a2.3,2.3,0,0,1-1.55-2.22,2.42,2.42,0,0,1,2.42-2.43,2.39,2.39,0,0,1,2.42,2.43,2.3,2.3,0,0,1-1.55,2.22l-1.74.83Z..." />
+                            </svg>
+                            <div class="text-left">
+                                <p class="text-xs uppercase opacity-80">Get it on</p>
+                                <p class="text-lg font-semibold">Google Play</p>
+                            </div>
+                        </a>
+                    @endif
                 </div>
                 <div class="flex justify-center scroll-animate" style="transition-delay: 300ms;">
-                    <img src="{{ asset('front/asset/img/konterdigital.png') }}" alt="Aplikasi Konter Digital"
-                        class="transform md:rotate-6 max-w-full h-auto" />
+                    <img src="{{ $landing->image ? asset('storage/' . $landing->image) : asset('front/asset/img/konterdigital.png') }}"
+                        alt="Aplikasi Konter Digital" class="transform md:rotate-6 max-w-full h-auto" />
                 </div>
             </div>
         </section>
@@ -197,74 +196,48 @@
             </div>
         </section>
 
+        {{-- Blog Section --}}
         <section id="blog" class="py-20 bg-neutral">
             <div class="container mx-auto px-6">
-                <div class="text-center mb-16 scroll-animate">
-                    <h2 class="text-3xl md:text-4xl font-bold text-text-primary">
-                        Dari Blog Kami
-                    </h2>
-                    <p class="text-text-secondary mt-2">
-                        Tips, trik, dan berita terbaru seputar bisnis pulsa.
-                    </p>
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900">Dari Blog Kami</h2>
+                    <p class="mt-2 text-gray-600">Berita & artikel terbaru seputar server pulsa dan teknologi</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div
-                        class="bg-base rounded-lg shadow-md overflow-hidden transform hover:-translate-y-2 transition duration-300 scroll-animate">
-                        <img src="https://images.unsplash.com/photo-1554495573-2d277b5f1784?q=80&w=1470&auto=format&fit=crop"
-                            alt="Blog Image" class="w-full h-48 object-cover" />
-                        <div class="p-6">
-                            <p class="text-sm text-text-secondary">3 Agustus 2025</p>
-                            <a href="detail-blog.html" class="block">
-                                <h3 class="font-bold text-xl mt-2 text-text-primary">
-                                    5 Cara Meningkatkan Omzet Konter Pulsa
-                                </h3>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    @forelse($posts as $post)
+                        <div
+                            class="bg-gray-50 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                            <a href="{{ route('blog.show', $post->slug) }}">
+                                @if ($post->thumbnail)
+                                    <img src="{{ asset('storage/' . $post->thumbnail) }}" alt="{{ $post->title }}"
+                                        class="w-full h-56 object-cover">
+                                @else
+                                    <img src="{{ asset('front/asset/img/default-blog.jpg') }}" alt="{{ $post->title }}"
+                                        class="w-full h-56 object-cover">
+                                @endif
                             </a>
-                            <p class="text-text-secondary mt-2">
-                                Pelajari strategi jitu untuk menaikkan keuntungan bisnis pulsa
-                                Anda di era digital.
-                            </p>
-                            <a href="#" class="text-primary hover:underline mt-4 inline-block font-semibold">Baca
-                                Selengkapnya &rarr;</a>
-                        </div>
-                    </div>
-                    <div class="bg-base rounded-lg shadow-md overflow-hidden transform hover:-translate-y-2 transition duration-300 scroll-animate"
-                        style="transition-delay: 150ms">
-                        <img src="https://images.unsplash.com/photo-1633113089632-62432c38ade0?q=80&w=1470&auto=format&fit=crop"
-                            alt="Blog Image" class="w-full h-48 object-cover" />
-                        <div class="p-6">
-                            <p class="text-sm text-text-secondary">28 Juli 2025</p>
-                            <a href="detail-blog.html" class="block">
-                                <h3 class="font-bold text-xl mt-2 text-text-primary">
-                                    Mengapa Sistem Referral Penting?
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">
+                                    <a href="{{ route('blog.show', $post->slug) }}"
+                                        class="hover:text-blue-600 transition duration-300">
+                                        {{ $post->title }}
+                                    </a>
                                 </h3>
-                            </a>
-                            <p class="text-text-secondary mt-2">
-                                Manfaatkan kekuatan word-of-mouth untuk mendapatkan
-                                penghasilan pasif.
-                            </p>
-                            <a href="#" class="text-primary hover:underline mt-4 inline-block font-semibold">Baca
-                                Selengkapnya &rarr;</a>
+                                <p class="text-gray-600 text-sm mb-4">
+                                    {{ Str::limit(strip_tags($post->body), 100) }}
+                                </p>
+                                <a href="{{ route('blog.show', $post->slug) }}"
+                                    class="text-blue-600 hover:underline font-medium">
+                                    Baca Selengkapnya →
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="bg-base rounded-lg shadow-md overflow-hidden transform hover:-translate-y-2 transition duration-300 scroll-animate"
-                        style="transition-delay: 300ms">
-                        <img src="https://images.unsplash.com/photo-1586941829035-662b2d6f29a2?q=80&w=1470&auto=format&fit=crop"
-                            alt="Blog Image" class="w-full h-48 object-cover" />
-                        <div class="p-6">
-                            <p class="text-sm text-text-secondary">20 Juli 2025</p>
-                            <a href="detail-blog.html" class="block">
-                                <h3 class="font-bold text-xl mt-2 text-text-primary">
-                                    Keamanan Transaksi Digital: Yang Perlu Anda Tahu
-                                </h3>
-                            </a>
-                            <p class="text-text-secondary mt-2">
-                                Pastikan bisnis dan pelanggan Anda aman dari penipuan dengan
-                                tips berikut.
-                            </p>
-                            <a href="#" class="text-primary hover:underline mt-4 inline-block font-semibold">Baca
-                                Selengkapnya &rarr;</a>
-                        </div>
-                    </div>
+                    @empty
+                        <p class="text-center text-gray-500 col-span-3">
+                            Belum ada postingan terbaru.
+                        </p>
+                    @endforelse
                 </div>
             </div>
         </section>

@@ -6,15 +6,18 @@ use App\Http\Controllers\Cms\PageController;
 use App\Http\Controllers\Cms\PostController;
 use App\Http\Controllers\Cms\RoleController;
 use App\Http\Controllers\Cms\UserController;
+use App\Http\Controllers\Front\BlogController;
+use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Cms\LandingController;
 use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\SettingController;
 use App\Http\Controllers\Cms\CategoryController;
 use App\Http\Controllers\Cms\DashboardController;
-use App\Http\Controllers\Cms\LandingController;
 
-Route::get('/', function () {
-    return view('front.home.index');
-});
+Route::get('/', [HomeController::class, 'index'])->name('front.home.index');
+
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::middleware('auth')->prefix('cms')->group(function () {
 
