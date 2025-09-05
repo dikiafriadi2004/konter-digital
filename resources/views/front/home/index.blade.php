@@ -7,6 +7,7 @@
         <!-- Hero Section - Diperbarui untuk kesan mewah, elegan, dan modern -->
         <section id="home"
             class="bg-gradient-to-br from-hero-gradient-start to-hero-gradient-end text-white relative overflow-hidden py-24 md:py-40">
+            <div class="absolute inset-0 z-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
 
             <div class="container mx-auto px-6 relative z-10 grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-center md:text-left scroll-animate">

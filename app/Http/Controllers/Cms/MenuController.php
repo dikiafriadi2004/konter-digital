@@ -136,8 +136,8 @@ class MenuController extends Controller
             'blog'        => '/blog',
             'blog_detail' => '/blog/{slug}',
             'contact'     => '/contact',
-            'privacy'     => '/privacy-policy',
-            'about'       => '/about-us',
+            'privacy'     => '/privacy',
+            'about'       => '/about',
             default       => null,
         };
     }

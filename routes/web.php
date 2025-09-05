@@ -27,9 +27,6 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 
 Route::get('/about', [AboutUsController::class, 'index'])->name('about.index');
 
-// Pages (dinamis: about, privacy, terms, dll)
-Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');
-
 
 Route::middleware('auth')->prefix('cms')->group(function () {
 
@@ -124,3 +121,5 @@ Route::middleware('auth')->prefix('cms')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');
