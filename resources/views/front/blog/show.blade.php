@@ -1,6 +1,11 @@
 @extends('front.layouts.app')
 
-@section('title', $post->title)
+@section('title', $title)
+@section('meta_description', $meta_description)
+@section('meta_keywords', $meta_keywords)
+@push('meta_image')
+    {{ $meta_image }}
+@endpush
 
 @section('content')
     <div class="container mx-auto px-6 py-12 lg:py-16">

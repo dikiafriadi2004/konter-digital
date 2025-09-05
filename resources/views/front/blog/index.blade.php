@@ -1,6 +1,8 @@
 @extends('front.layouts.app')
 
-@section('title', 'Blog Kami')
+@section('title', $title ?? null)
+@section('meta_description', $meta_description ?? null)
+@section('meta_keywords', $meta_keywords ?? null)
 
 @section('content')
     <main>
@@ -42,7 +44,7 @@
 
                 <!-- Pagination -->
                 <div class="flex justify-center mt-12">
-                    {{ $posts->links('pagination::tailwind') }}
+                    {{ $posts->links('pagination::custom-paginate') }}
                 </div>
             </div>
         </section>

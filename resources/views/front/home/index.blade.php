@@ -1,13 +1,20 @@
 @extends('front.layouts.app')
 
-@section('title', 'Home')
+{{-- SEO --}}
+@section('title', $setting->meta_title ?? 'Home')
+@section('meta_description',
+    $setting->meta_description ??
+    'Konter Digital - Solusi Server Pulsa Modern untuk Bisnis
+    Anda')
+@section('meta_keywords', $setting->meta_keywords ?? 'server pulsa, konter digital, pulsa murah, PPOB')
 
 @section('content')
     <main>
         <!-- Hero Section - Diperbarui untuk kesan mewah, elegan, dan modern -->
         <section id="home"
             class="bg-gradient-to-br from-hero-gradient-start to-hero-gradient-end text-white relative overflow-hidden py-24 md:py-40">
-            <div class="absolute inset-0 z-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
+            <div class="absolute inset-0 z-0 opacity-10"
+                style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
 
             <div class="container mx-auto px-6 relative z-10 grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-center md:text-left scroll-animate">
@@ -20,11 +27,14 @@
                     @if ($landing && $landing->cta_google_play)
                         <a href="{{ $landing->cta_google_play }}"
                             class="mt-6 inline-flex items-center justify-center bg-gray-900/70 text-white rounded-full px-6 py-3 space-x-3 hover:bg-gray-900/90 transition duration-300 shadow-lg w-full sm:w-auto">
-                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                            {{-- Google Play Monochrome Icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                                class="w-6 h-6 fill-current text-white">
                                 <path
-                                    d="M14.5,9.13a2.3,2.3,0,0,1-1.55-2.22,2.42,2.42,0,0,1,2.42-2.43,2.39,2.39,0,0,1,2.42,2.43,2.3,2.3,0,0,1-1.55,2.22l-1.74.83Z..." />
+                                    d="M96 52c-5 5-8 12-8 20v368c0 8 3 15 8 20l220-204L96 52zm277 142l-44 62 44 62 58-40c7-5 11-13 11-22s-4-17-11-22l-58-40zM96 460c5 5 12 8 20 8 6 0 12-2 17-6l179-132-44-62-172 192zm0-408l172 192 44-62-179-132c-10-7-24-7-33 2z" />
                             </svg>
-                            <div class="text-left">
+
+                            <div class="text-left ml-2">
                                 <p class="text-xs uppercase opacity-80">Get it on</p>
                                 <p class="text-lg font-semibold">Google Play</p>
                             </div>

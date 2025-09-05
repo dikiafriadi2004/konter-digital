@@ -21,4 +21,12 @@ class Setting extends Model
         'meta_description',
         'meta_keywords',
     ];
+
+    /**
+     * Tampilkan nomor WhatsApp dalam format lokal (awalan 0)
+     */
+    public function getWhatsappFormattedAttribute()
+    {
+        return preg_replace('/^62/', '0', $this->whatsapp);
+    }
 }

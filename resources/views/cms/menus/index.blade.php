@@ -1,5 +1,7 @@
 @extends('cms.layouts.app')
 
+@section('title', 'Menu Management')
+
 @section('content')
     <main class="flex-grow p-4 sm:p-6 lg:p-8">
         {{-- breadcrumb --}}

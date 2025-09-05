@@ -12,7 +12,12 @@ class HomeController extends Controller
     public function index()
     {
         $landing = Landing::first();
-         $posts = Post::latest()->take(3)->get();
+        // Ambil hanya artikel yang published, terbaru, maksimal 3
+        $posts = Post::with(['user', 'category'])
+            ->where('status', 'published') // 🔹 filter published
+            ->latest()
+            ->take(3)
+            ->get();
         return view('front.home.index', compact('landing', 'posts'));
     }
 }

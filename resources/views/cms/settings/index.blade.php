@@ -88,27 +88,27 @@
                     <div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-1">Facebook</label>
-                            <input type="url" name="facebook" value="{{ old('facebook', $setting->facebook) }}"
+                            <input type="text" name="facebook" value="{{ old('facebook', $setting->facebook) }}"
                                 class="w-full rounded-md border-slate-300 shadow-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3">
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-1">Twitter</label>
-                            <input type="url" name="twitter" value="{{ old('twitter', $setting->twitter) }}"
+                            <input type="text" name="twitter" value="{{ old('twitter', $setting->twitter) }}"
                                 class="w-full rounded-md border-slate-300 shadow-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3">
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-1">Instagram</label>
-                            <input type="url" name="instagram" value="{{ old('instagram', $setting->instagram) }}"
+                            <input type="text" name="instagram" value="{{ old('instagram', $setting->instagram) }}"
                                 class="w-full rounded-md border-slate-300 shadow-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3">
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-1">Telegram</label>
-                            <input type="url" name="telegram" value="{{ old('telegram', $setting->telegram) }}"
+                            <input type="text" name="telegram" value="{{ old('telegram', $setting->telegram) }}"
                                 class="w-full rounded-md border-slate-300 shadow-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3">
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-1">Telegram Channel</label>
-                            <input type="url" name="telegram_channel"
+                            <input type="text" name="telegram_channel"
                                 value="{{ old('telegram_channel', $setting->telegram_channel) }}"
                                 class="w-full rounded-md border-slate-300 shadow-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white p-3">
                         </div>
