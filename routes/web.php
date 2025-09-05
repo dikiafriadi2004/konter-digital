@@ -13,11 +13,23 @@ use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\SettingController;
 use App\Http\Controllers\Cms\CategoryController;
 use App\Http\Controllers\Cms\DashboardController;
+use App\Http\Controllers\Front\AboutUsController;
+use App\Http\Controllers\Front\ContactController;
+use App\Http\Controllers\Front\PagesController;
 
 Route::get('/', [HomeController::class, 'index'])->name('front.home.index');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+
+Route::get('/about', [AboutUsController::class, 'index'])->name('about.index');
+
+// Pages (dinamis: about, privacy, terms, dll)
+Route::get('/{slug}', [PagesController::class, 'show'])->name('front.pages.show');
+
 
 Route::middleware('auth')->prefix('cms')->group(function () {
 
