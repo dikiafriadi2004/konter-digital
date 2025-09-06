@@ -31,59 +31,7 @@ tailwind.config = {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Inisialisasi Chart.js ---
-    const ctx = document.getElementById('analyticsChart');
-    if (ctx) {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
-                datasets: [{
-                    label: 'Tampilan Halaman',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }, {
-                    label: 'Pengunjung Unik',
-                    data: [30, 40, 45, 50, 60, 70, 65],
-                    fill: false,
-                    borderColor: 'rgb(153, 102, 255)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: 'rgb(100, 116, 139)' // text-slate-500
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: 'rgb(100, 116, 139)'
-                        },
-                        grid: {
-                            color: 'rgba(203, 213, 225, 0.2)' // slate-300 with transparency
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            color: 'rgb(100, 116, 139)'
-                        },
-                        grid: {
-                            color: 'rgba(203, 213, 225, 0.2)'
-                        }
-                    }
-                }
-            }
-        });
-    }
-
+    
     // Sidebar and Dark Mode Toggle Logic (Copied from global.js if it exists)
     const sidebarToggleMobile = document.getElementById('sidebar-toggle-mobile');
     const sidebar = document.getElementById('sidebar');
