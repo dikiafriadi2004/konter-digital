@@ -8,11 +8,11 @@ class Setting extends Model
 {
     protected $fillable = [
         'site_name',
-        'site_description',
         'logo',
         'favicon',
         'office_address',
         'facebook',
+        'twitter',
         'instagram',
         'telegram',
         'telegram_channel',

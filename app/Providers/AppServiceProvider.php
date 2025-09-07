@@ -26,71 +26,78 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $request = request();
+
+        // --- Visitor Logger ---
+        try {
+            if (
+                !$request->is('cms/*') &&
+                $request->isMethod('GET') &&
+                str_contains($request->header('accept', ''), 'text/html') &&
+                !preg_match('/\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|woff2?|ttf|eot)$/i', $request->path())
+            ) {
+                $ip    = $request->ip();
+                $today = now()->toDateString();
+                $agent = new Agent();
+
+                $visitor = Visitor::where('ip', $ip)
+                    ->where('visit_date', $today)
+                    ->first();
+
+                if ($visitor) {
+                    $visitor->increment('hit_count');
+                } else {
+                    $location = 'Unknown';
+                    if (in_array($ip, ['127.0.0.1', '::1'])) {
+                        $location = 'Localhost';
+                    } else {
+                        try {
+                            $geo = Http::timeout(5)->get(
+                                "http://ip-api.com/json/{$ip}?fields=country,regionName,city,status"
+                            )->json();
+
+                            if (!empty($geo) && ($geo['status'] ?? '') === 'success') {
+                                $city    = $geo['city'] ?? '-';
+                                $region  = $geo['regionName'] ?? '-';
+                                $country = $geo['country'] ?? '-';
+                                $location = "{$city}, {$region}, {$country}";
+                            }
+                        } catch (\Exception $e) {
+                            Log::warning("GeoIP lookup failed: " . $e->getMessage());
+                        }
+                    }
+
+                    Visitor::create([
+                        'ip'         => $ip,
+                        'browser'    => $agent->browser(),
+                        'platform'   => $agent->platform(),
+                        'device'     => $agent->device() ?: 'Desktop',
+                        'location'   => $location,
+                        'page'       => $request->path(),
+                        'hit_count'  => 1,
+                        'visit_date' => $today,
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('VisitorLogger error: ' . $e->getMessage());
+        }
+
+        // --- Global View Composer ---
         View::composer('*', function ($view) {
-            // Ambil semua menu utama (beserta child)
             $menus = Menu::whereNull('parent_id')
                 ->orderBy('order')
                 ->with('children')
                 ->get();
 
-            // Ambil pengaturan site
-            $setting = Setting::first();
+            $setting = Setting::firstOrNew([], [
+                'site_name' => 'Default Site',
+                'logo'      => null,
+                'telegram'  => null,
+                'whatsapp'  => null,
+                'email'     => null,
+            ]);
 
-            // --- Visitor Logger ---
-            try {
-                if (!request()->is('cms/*')) {
-                    $ip = request()->ip();
-                    $today = now()->toDateString(); // YYYY-MM-DD
-                    $agent = new Agent();
-
-                    // Cari visitor hari ini
-                    $visitor = Visitor::where('ip', $ip)
-                        ->where('visit_date', $today)
-                        ->first();
-
-                    if ($visitor) {
-                        // Sudah ada -> tambah hit_count
-                        $visitor->increment('hit_count');
-                    } else {
-                        // Lokasi via API
-                        $location = 'Unknown';
-                        if (in_array($ip, ['127.0.0.1', '::1'])) {
-                            $location = 'Localhost';
-                        } else {
-                            try {
-                                $geo = Http::timeout(5)->get(
-                                    "http://ip-api.com/json/{$ip}?fields=country,regionName,city,status"
-                                )->json();
-
-                                if (!empty($geo) && ($geo['status'] ?? '') === 'success') {
-                                    $city    = $geo['city'] ?? '-';
-                                    $region  = $geo['regionName'] ?? '-';
-                                    $country = $geo['country'] ?? '-';
-                                    $location = "{$city}, {$region}, {$country}";
-                                }
-                            } catch (\Exception $e) {
-                                Log::warning("GeoIP lookup failed: " . $e->getMessage());
-                            }
-                        }
-
-                        // Simpan visitor baru
-                        Visitor::create([
-                            'ip'         => $ip,
-                            'browser'    => $agent->browser(),
-                            'platform'   => $agent->platform(),
-                            'device'     => $agent->device() ?: 'Desktop',
-                            'location'   => $location,
-                            'page'       => request()->path(),
-                            'hit_count'  => 1,
-                            'visit_date' => $today, // <--- pastikan diisi
-                        ]);
-                    }
-                }
-            } catch (\Exception $e) {
-                Log::error('VisitorLogger error: ' . $e->getMessage());
-            }
-
-            // Share ke semua view
             $view->with([
                 'menus'   => $menus,
                 'setting' => $setting,
