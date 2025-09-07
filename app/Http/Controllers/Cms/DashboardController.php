@@ -8,6 +8,7 @@ use App\Models\Cms\Visitor;
 use App\Models\Cms\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -74,8 +75,19 @@ class DashboardController extends Controller
         // --- Tambahan: Visitor Hari Ini ---
         $today = now()->toDateString();
 
-        $uniqueVisitors = Visitor::where('visit_date', $today)->count();       // Unique visitor
-        $totalHits      = Visitor::where('visit_date', $today)->sum('hit_count'); // Total hits
+        $uniqueVisitors = Visitor::where('visit_date', $today)->distinct('ip')->count('ip'); // ✅ fix
+        $totalHits      = Visitor::where('visit_date', $today)->sum('hit_count');
+
+        // --- Visitor per Halaman Hari Ini ---
+        $visitorPages = Visitor::select(
+            'page',
+            DB::raw('SUM(hit_count) as hits'),
+            DB::raw('COUNT(DISTINCT ip) as unique_visitors') // ✅ tambah unique visitor per page
+        )
+            ->where('visit_date', $today)
+            ->groupBy('page')
+            ->orderByDesc('hits')
+            ->get();
 
         return view('cms.dashboard.index', compact(
             'totalUsers',
@@ -90,7 +102,8 @@ class DashboardController extends Controller
             'visitors',
             'visitorAnalytics',
             'uniqueVisitors',
-            'totalHits'
+            'totalHits',
+            'visitorPages'
         ));
     }
 }

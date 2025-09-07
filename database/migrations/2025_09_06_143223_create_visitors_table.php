@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('visitors', function (Blueprint $table) {
-            $table->id();
-            $table->string('ip')->index();
+            $table->id(); // auto_increment primary key
+            $table->string('ip');
             $table->string('browser')->nullable();
             $table->string('platform')->nullable();
             $table->string('device')->nullable();
             $table->string('location')->nullable();
             $table->string('page')->nullable();
-            $table->date('visit_date')->index(); // buat kolom tanggal terpisah
-            $table->unsignedInteger('hit_count')->default(1);
+            $table->date('visit_date');
+            $table->unsignedInteger('hit_count')->default(1); // Hanya default 1, jangan auto_increment
             $table->timestamps();
 
-            $table->unique(['ip', 'visit_date']);
+            $table->unique(['ip', 'page', 'visit_date'], 'unique_visitor_per_day'); // mencegah duplikat
         });
     }
 

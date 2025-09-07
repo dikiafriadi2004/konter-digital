@@ -31,22 +31,24 @@ class AppServiceProvider extends ServiceProvider
         // --- Visitor Logger ---
         try {
             if (
-                !$request->is('cms/*') &&
+                !$request->is('cms/*') && // skip admin
                 $request->isMethod('GET') &&
                 str_contains($request->header('accept', ''), 'text/html') &&
                 !preg_match('/\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|woff2?|ttf|eot)$/i', $request->path())
             ) {
                 $ip    = $request->ip();
                 $today = now()->toDateString();
+                $page  = $request->path();
                 $agent = new Agent();
 
+                // Cek visitor unik: IP + page + tanggal
                 $visitor = Visitor::where('ip', $ip)
                     ->where('visit_date', $today)
+                    ->where('page', $page)
                     ->first();
 
-                if ($visitor) {
-                    $visitor->increment('hit_count');
-                } else {
+                if (!$visitor) {
+                    // Tentukan lokasi
                     $location = 'Unknown';
                     if (in_array($ip, ['127.0.0.1', '::1'])) {
                         $location = 'Localhost';
@@ -67,17 +69,19 @@ class AppServiceProvider extends ServiceProvider
                         }
                     }
 
+                    // Simpan visitor baru
                     Visitor::create([
                         'ip'         => $ip,
                         'browser'    => $agent->browser(),
                         'platform'   => $agent->platform(),
                         'device'     => $agent->device() ?: 'Desktop',
                         'location'   => $location,
-                        'page'       => $request->path(),
+                        'page'       => $page,
                         'hit_count'  => 1,
                         'visit_date' => $today,
                     ]);
                 }
+                // Jika sudah ada visitor → jangan tambah hit_count lagi
             }
         } catch (\Exception $e) {
             Log::error('VisitorLogger error: ' . $e->getMessage());

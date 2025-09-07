@@ -20,9 +20,7 @@
 
             {{-- Total Post --}}
             <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md flex items-center gap-4">
-                <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
-                    <!-- SVG Icon -->
-                </div>
+                <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full"></div>
                 <div>
                     <h3 class="text-sm font-semibold text-slate-500">Total Post</h3>
                     <p class="text-2xl font-bold mt-1">{{ $totalPosts }}</p>
@@ -34,9 +32,7 @@
 
             {{-- Total Category --}}
             <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md flex items-center gap-4">
-                <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-full">
-                    <!-- SVG Icon -->
-                </div>
+                <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-full"></div>
                 <div>
                     <h3 class="text-sm font-semibold text-slate-500">Total Category</h3>
                     <p class="text-2xl font-bold mt-1">{{ $totalCategories }}</p>
@@ -45,9 +41,7 @@
 
             {{-- Total Views --}}
             <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md flex items-center gap-4">
-                <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">
-                    <!-- SVG Icon -->
-                </div>
+                <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full"></div>
                 <div>
                     <h3 class="text-sm font-semibold text-slate-500">Total Views</h3>
                     <p class="text-2xl font-bold mt-1">{{ $totalViews }}</p>
@@ -56,9 +50,7 @@
 
             {{-- Unique Visitors Hari Ini --}}
             <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md flex items-center gap-4">
-                <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-full">
-                    <!-- SVG Icon -->
-                </div>
+                <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-full"></div>
                 <div>
                     <h3 class="text-sm font-semibold text-slate-500">Unique Visitors Hari Ini</h3>
                     <p class="text-2xl font-bold mt-1">{{ $uniqueVisitors }}</p>
@@ -67,9 +59,7 @@
 
             {{-- Total Hits Hari Ini --}}
             <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md flex items-center gap-4">
-                <div class="p-3 bg-pink-100 dark:bg-pink-900 rounded-full">
-                    <!-- SVG Icon -->
-                </div>
+                <div class="p-3 bg-pink-100 dark:bg-pink-900 rounded-full"></div>
                 <div>
                     <h3 class="text-sm font-semibold text-slate-500">Total Hits Hari Ini</h3>
                     <p class="text-2xl font-bold mt-1">{{ $totalHits }}</p>
@@ -121,11 +111,55 @@
                                 <td class="px-4 py-2">{{ $v->device }}</td>
                                 <td class="px-4 py-2">{{ $v->location ?? '-' }}</td>
                                 <td class="px-4 py-2">{{ $v->page }}</td>
-                                <td class="px-4 py-2 text-xs">{{ $v->visit_date }}</td>
+                                <td class="px-4 py-2 text-xs">{{ $v->visit_date->format('d M Y') }}</td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="7" class="px-4 py-2 text-center text-slate-500">Belum ada data visitor</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {{-- Halaman yang Dikunjungi Hari Ini --}}
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold mb-4">Halaman yang Dikunjungi Hari Ini</h3>
+            <div class="overflow-y-auto max-h-96 border rounded-lg">
+                <table class="min-w-full border-collapse">
+                    <thead class="bg-slate-100 dark:bg-slate-700 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-semibold">Page</th>
+                            <th class="px-4 py-2 text-left text-xs font-semibold">Hits</th>
+                            <th class="px-4 py-2 text-left text-xs font-semibold">Unique Visitor</th>
+                            <th class="px-4 py-2 text-left text-xs font-semibold">%</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                        @php
+                            $totalHitsToday = $visitorPages->sum('hits');
+                        @endphp
+                        @forelse ($visitorPages as $vp)
+                            @php
+                                $percentage = $totalHitsToday > 0
+                                    ? round(($vp->hits / $totalHitsToday) * 100, 1)
+                                    : 0;
+                            @endphp
+                            <tr class="text-sm">
+                                <td class="px-4 py-2 font-medium">{{ $vp->page ?? '/' }}</td>
+                                <td class="px-4 py-2">{{ $vp->hits }}</td>
+                                <td class="px-4 py-2">{{ $vp->unique_visitors }}</td>
+                                <td class="px-4 py-2 w-1/3">
+                                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
+                                        <div class="h-3 rounded-full bg-blue-500" style="width: {{ $percentage }}%"></div>
+                                    </div>
+                                    <span class="text-xs text-slate-500">{{ $percentage }}%</span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-4 py-2 text-center text-slate-500">Belum ada data halaman hari ini</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -153,15 +187,9 @@
                                 <td class="px-4 py-2">{{ $post->user->name }}</td>
                                 <td class="px-4 py-2">
                                     @if ($post->status === 'published')
-                                        <span
-                                            class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200">
-                                            Published
-                                        </span>
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200">Published</span>
                                     @else
-                                        <span
-                                            class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200">
-                                            Draft
-                                        </span>
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200">Draft</span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-2 text-xs">{{ $post->created_at->diffForHumans() }}</td>
@@ -229,10 +257,7 @@
                     tension: 0.3
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
 
         // Visitor Analytics Chart
@@ -247,10 +272,7 @@
                     backgroundColor: 'rgba(16, 185, 129, 0.7)'
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
     </script>
 @endpush

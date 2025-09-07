@@ -47,7 +47,7 @@ class BlogController extends Controller
             ->where('status', 'published')
             ->where('id', '!=', $post->id)
             ->orderByDesc('views')
-            ->take(4)
+            ->take(5)
             ->get();
 
         // Ambil artikel terkait (kategori sama, hanya published, exclude post ini)
