@@ -42,7 +42,9 @@
                     @endif
                 </div>
                 <div class="flex justify-center scroll-animate" style="transition-delay: 300ms;">
-                    <img src="{{ $landing->image ? asset('storage/' . $landing->image) : asset('front/asset/img/konterdigital.png') }}"
+                    <img src="{{ $landing && $landing->image
+                        ? asset('storage/' . $landing->image)
+                        : asset('front/asset/img/konterdigital.png') }}"
                         alt="Aplikasi Konter Digital" class="transform md:rotate-6 max-w-full h-auto" />
                 </div>
             </div>
