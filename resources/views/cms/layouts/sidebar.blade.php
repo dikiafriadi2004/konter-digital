@@ -128,5 +128,16 @@
                 Settings
             </a>
         @endcan
+
+        <!-- File Manager -->
+        <a href="{{ route('cms.filemanager.index') }}"
+            class="nav-link flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-700">
+            <svg class="w-5 h-5 mr-3 text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+            </svg>
+            File Manager
+        </a>
     </nav>
 </aside>

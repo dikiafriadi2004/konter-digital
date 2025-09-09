@@ -13,6 +13,7 @@ use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\SettingController;
 use App\Http\Controllers\Cms\CategoryController;
 use App\Http\Controllers\Cms\DashboardController;
+use App\Http\Controllers\Cms\FileManagerController;
 use App\Http\Controllers\Front\AboutUsController;
 use App\Http\Controllers\Front\ContactController;
 use App\Http\Controllers\Front\PagesController;
@@ -117,6 +118,13 @@ Route::middleware('auth')->prefix('cms')->group(function () {
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:User Edit');
         Route::put('users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:User Edit');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy')->middleware('permission:User Delete');
+    });
+
+    // Filemanager
+    Route::prefix('filemanager')->name('cms.filemanager.')->group(function () {
+        Route::get('/', [FileManagerController::class, 'index'])->name('index');
+        Route::post('/upload', [FileManagerController::class, 'upload'])->name('upload');
+        Route::delete('/delete', [FileManagerController::class, 'delete'])->name('delete');
     });
 });
 
