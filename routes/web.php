@@ -125,6 +125,9 @@ Route::middleware('auth')->prefix('cms')->group(function () {
         Route::get('/', [FileManagerController::class, 'index'])->name('index');
         Route::post('/upload', [FileManagerController::class, 'upload'])->name('upload');
         Route::delete('/delete', [FileManagerController::class, 'delete'])->name('delete');
+
+        // routes/web.php
+        Route::get('/popup', [FileManagerController::class, 'popup'])->name('popup');
     });
 });
 

@@ -25,17 +25,20 @@
         <div id="fileGrid" class="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
             @foreach ($files as $file)
                 <div class="file-item group relative bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-lg overflow-hidden"
-                    data-id="{{ $file->id }}">
-                    <img src="{{ url(Storage::url($file->path)) }}"
+                    data-id="{{ $file['id'] }}">
+                    <img src="{{ $file['url'] }}"
                         class="previewImg w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
-                        data-url="{{ url(Storage::url($file->path)) }}">
+                        data-url="{{ $file['url'] }}">
                     <div
                         class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                        <button data-url="{{ url(Storage::url($file->path)) }}"
-                            class="copyUrl px-3 py-1.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600">Copy
-                            URL</button>
-                        <button data-id="{{ $file->id }}"
-                            class="deleteFile ml-2 px-3 py-1.5 text-xs bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
+                        <button data-url="{{ $file['url'] }}"
+                            class="copyUrl px-3 py-1.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Copy URL
+                        </button>
+                        <button data-id="{{ $file['id'] }}"
+                            class="deleteFile ml-2 px-3 py-1.5 text-xs bg-red-500 text-white rounded hover:bg-red-600">
+                            Delete
+                        </button>
                     </div>
                 </div>
             @endforeach
@@ -67,7 +70,7 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Toast -->
     <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded shadow hidden z-50"></div>
 @endsection
 
@@ -134,19 +137,14 @@
                 .then(res => res.json())
                 .then(res => {
                     progressWrapper.classList.add("hidden");
-                    progressBar.style.width = "0%";
-                    progressText.innerText = "0%";
                     if (res.success) {
                         res.files.forEach(addFileToGrid);
-                        showToast('Upload berhasil', 'success');
-                    } else {
-                        showToast(res.message || 'Upload gagal', 'error');
-                    }
+                        showToast('Upload berhasil');
+                    } else showToast(res.message || 'Upload gagal', 'error');
                 })
-                .catch(err => {
+                .catch(() => {
                     progressWrapper.classList.add("hidden");
                     showToast('Upload gagal', 'error');
-                    console.error(err);
                 });
         }
 
@@ -156,34 +154,27 @@
                 "file-item group relative bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-lg overflow-hidden";
             item.dataset.id = file.id;
             item.innerHTML = `
-            <img src="${file.url}" data-url="${file.url}" class="previewImg w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer">
-            <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                <button data-url="${file.url}" class="copyUrl px-3 py-1.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600">Copy URL</button>
-                <button data-id="${file.id}" class="deleteFile ml-2 px-3 py-1.5 text-xs bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
-            </div>`;
+        <img src="${file.url}" data-url="${file.url}" class="previewImg w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer">
+        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+            <button data-url="${file.url}" class="copyUrl px-3 py-1.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600">Copy URL</button>
+            <button data-id="${file.id}" class="deleteFile ml-2 px-3 py-1.5 text-xs bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
+        </div>`;
             fileGrid.prepend(item);
         }
 
-        // Event Delegation untuk Preview, Copy, Delete
+        // Event Delegation
         document.addEventListener("click", e => {
             const copyBtn = e.target.closest(".copyUrl");
             const deleteBtn = e.target.closest(".deleteFile");
             const previewImg = e.target.closest(".previewImg");
 
-            // Preview
             if (previewImg) {
                 currentPreviewUrl = previewImg.dataset.url;
                 previewImage.src = currentPreviewUrl;
                 previewModal.classList.remove("hidden");
                 previewModal.classList.add("flex");
             }
-
-            // Copy URL from Grid
-            if (copyBtn && copyBtn.dataset.url) {
-                copyToClipboard(copyBtn.dataset.url);
-            }
-
-            // Delete
+            if (copyBtn) copyToClipboard(copyBtn.dataset.url);
             if (deleteBtn) {
                 deleteFileId = deleteBtn.dataset.id;
                 deleteModal.classList.remove("hidden");
@@ -191,50 +182,16 @@
             }
         });
 
-        // Copy URL from Preview Modal
-        copyUrlBtn.addEventListener("click", () => {
-            if (!currentPreviewUrl) return;
-            copyToClipboard(currentPreviewUrl);
-        });
-
-        // Fungsi copy dengan fallback
-        function copyToClipboard(text) {
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text)
-                    .then(() => showToast('URL copied', 'success'))
-                    .catch(() => showToast('Gagal copy URL', 'error'));
-            } else {
-                // Fallback pakai textarea
-                let textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.position = "fixed";
-                textArea.style.opacity = "0";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast('URL copied', 'success');
-                } catch (err) {
-                    showToast('Gagal copy URL', 'error');
-                }
-                document.body.removeChild(textArea);
-            }
-        }
-
-        // Close Preview
+        copyUrlBtn.addEventListener("click", () => copyToClipboard(currentPreviewUrl));
         closePreview.addEventListener("click", () => {
             previewModal.classList.add("hidden");
             previewModal.classList.remove("flex");
         });
-
-        // Delete Modal Buttons
         cancelDelete.addEventListener("click", () => {
             deleteModal.classList.add("hidden");
             deleteModal.classList.remove("flex");
             deleteFileId = null;
         });
-
         confirmDelete.addEventListener("click", () => {
             if (!deleteFileId) return;
             fetch("{{ route('cms.filemanager.delete') }}", {
@@ -250,9 +207,8 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        const el = document.querySelector(`.file-item[data-id="${deleteFileId}"]`);
-                        if (el) el.remove();
-                        showToast('File berhasil dihapus', 'success');
+                        document.querySelector(`.file-item[data-id="${deleteFileId}"]`)?.remove();
+                        showToast('File dihapus');
                     } else showToast('Gagal menghapus file', 'error');
                 })
                 .finally(() => {
@@ -261,5 +217,19 @@
                     deleteFileId = null;
                 });
         });
+
+        function copyToClipboard(text) {
+            navigator.clipboard?.writeText(text).then(() => showToast('URL copied')).catch(() => {
+                let ta = document.createElement("textarea");
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('URL copied');
+                } catch {}
+                document.body.removeChild(ta);
+            });
+        }
     </script>
 @endpush

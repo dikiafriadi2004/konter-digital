@@ -201,6 +201,78 @@
 @endsection
 
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script>
+        tinymce.init({
+            selector: '#post-content',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount fullscreen preview code insertdatetime advlist autosave save directionality help nonbreaking pagebreak quickbars searchreplace table visualchars template toc wordcount image link media',
+            toolbar: `
+            undo redo | blocks fontfamily fontsize | bold italic underline strikethrough forecolor backcolor |
+            alignleft aligncenter alignright alignjustify | outdent indent lineheight |
+            numlist bullist | link image media table | removeformat | preview code fullscreen
+        `,
+            menubar: false,
+            height: 500,
+
+            // ✅ FIX masalah URL hilang
+            document_base_url: "{{ url('/') }}/",
+            relative_urls: false,
+            remove_script_host: false,
+            convert_urls: true,
+
+            // ✅ Tambahan konfigurasi image
+            image_dimensions: true,
+            image_caption: true,
+            image_title: true,
+
+            // ✅ Font dan ukuran default
+            font_family_formats: "Arial=arial,helvetica,sans-serif;" +
+                "Courier New=courier new,courier,monospace;" +
+                "Georgia=georgia,palatino;" +
+                "Tahoma=tahoma,arial,helvetica,sans-serif;" +
+                "Times New Roman=times new roman,times;" +
+                "Verdana=verdana,geneva;" +
+                "Roboto=roboto,system-ui,sans-serif;" +
+                "Open Sans=open sans,sans-serif;" +
+                "Poppins=poppins,sans-serif;" +
+                "Lato=lato,sans-serif;" +
+                "Montserrat=montserrat,sans-serif",
+            fontsize_formats: "10px 12px 14px 16px 18px 24px 36px 48px",
+
+            forced_root_block: 'p',
+            valid_elements: '*[*]',
+
+            content_style: `
+            body { font-family: system-ui, sans-serif; line-height: 1.6; }
+            h1,h2,h3,h4,h5,h6 { font-weight: 700; margin: 1.2em 0 0.5em; }
+            p { margin: 0 0 1em; }
+            ul,ol { margin: 0 0 1em 1.5em; }
+            img { max-width: 100%; height: auto; }
+        `,
+
+            // ✅ Integrasi dengan filemanager
+            file_picker_types: 'file image media',
+            file_picker_callback: function(callback, value, meta) {
+                let w = 900;
+                let h = 600;
+                let x = (window.innerWidth / 2) - (w / 2);
+                let y = (window.innerHeight / 2) - (h / 2);
+
+                let fm = window.open(
+                    '{{ route('cms.filemanager.popup') }}',
+                    'FileManager',
+                    `width=${w},height=${h},left=${x},top=${y},resizable=yes,scrollbars=yes,status=no`
+                );
+
+                window.SetUrl = function(url) {
+                    callback(url);
+                    fm.close();
+                };
+            }
+        });
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const fileUpload = document.getElementById('file-upload');
