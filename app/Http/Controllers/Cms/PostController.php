@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\SitemapController;
 
 class PostController extends Controller
 {
@@ -69,6 +70,11 @@ class PostController extends Controller
             'thumbnail' => $thumbnailPath,
             'status' => $request->status ?? 'draft',
         ]);
+
+        // ✅ Bersihkan cache sitemap jika ada
+        if (class_exists(SitemapController::class) && method_exists(SitemapController::class, 'clearCache')) {
+            SitemapController::clearCache();
+        }
 
         return redirect()->route('cms.posts.index')->with('success', 'Post created successfully!');
     }

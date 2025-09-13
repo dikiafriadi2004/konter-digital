@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Cms\MenuController;
 use App\Http\Controllers\Cms\PageController;
 use App\Http\Controllers\Cms\PostController;
@@ -11,12 +12,12 @@ use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Cms\LandingController;
 use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\SettingController;
+use App\Http\Controllers\Front\PagesController;
 use App\Http\Controllers\Cms\CategoryController;
 use App\Http\Controllers\Cms\DashboardController;
-use App\Http\Controllers\Cms\FileManagerController;
 use App\Http\Controllers\Front\AboutUsController;
 use App\Http\Controllers\Front\ContactController;
-use App\Http\Controllers\Front\PagesController;
+use App\Http\Controllers\Cms\FileManagerController;
 
 Route::get('/', [HomeController::class, 'index'])->name('front.home.index');
 
@@ -27,6 +28,8 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.index
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 Route::get('/about', [AboutUsController::class, 'index'])->name('about.index');
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 
 Route::middleware('auth')->prefix('cms')->group(function () {
